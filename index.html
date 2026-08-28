@@ -611,6 +611,34 @@ img,iframe,video{max-width:100%}
 /* 移动端禁用自定义光标 */
 @media(hover:none){.cursor-glow{display:none!important}*{cursor:auto!important}}
 
+
+/* 呼吸灯效果 */
+@keyframes breathing-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(212,175,55,0.3), 0 0 10px rgba(212,175,55,0.2), inset 0 0 5px rgba(212,175,55,0.1);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(212,175,55,0.8), 0 0 30px rgba(212,175,55,0.5), 0 0 45px rgba(212,175,55,0.3), inset 0 0 10px rgba(212,175,55,0.2);
+  }
+}
+@keyframes breathing-glow-strong {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(212,175,55,0.4), 0 0 15px rgba(212,175,55,0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(212,175,55,1), 0 0 40px rgba(212,175,55,0.7), 0 0 60px rgba(212,175,55,0.4);
+  }
+}
+.member-carousel__avatar,
+.avatar-wrap img,
+.rank__avatar {
+  animation: breathing-glow 3s ease-in-out infinite;
+  border-radius: 50%;
+}
+.modal__avatar {
+  animation: breathing-glow-strong 2.5s ease-in-out infinite;
+  border-radius: 8px;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@3"></script>
 </head>
@@ -625,7 +653,7 @@ img,iframe,video{max-width:100%}
 <div class="audio-player">
   <audio id="bgAudio" loop><source src="https://s3plus.meituan.net/opapisdk/op_ticket_885190757_1758424375681_qdqqd_t01hdm.mp3" type="audio/mpeg"></audio>
   <button class="audio-player__toggle-btn" id="audioBtn">▶</button>
-  <div class="audio-player__info">
+  <canvas id="waveformCanvas" width="120" height="30" style="margin-right:8px;"></canvas><div class="audio-player__info">
     <div class="audio-player__nowplaying" id="nowPlaying">♫ 燕云十六声 - 登录曲</div>
     <div class="audio-player__progress-bar" id="progressBar"><div class="audio-player__progress-fill" id="progressFill"></div></div>
     <div class="audio-player__time"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></div>
@@ -1066,12 +1094,45 @@ resizeCanvas();
 window.addEventListener('resize',resizeCanvas);
 class Particle{constructor(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*2+0.5;this.speedX=(Math.random()-0.5)*0.3;this.speedY=(Math.random()-0.5)*0.3;this.opacity=Math.random()*0.5+0.2;}
 update(){this.x+=this.speedX;this.y+=this.speedY;if(this.x<0||this.x>canvas.width)this.speedX*=-1;if(this.y<0||this.y>canvas.height)this.speedY*=-1;}
-draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle='rgba(212,175,55,'+this.opacity+')';ctx.fill();}}
-for(let i=0;i<70;i++)particles.push(new Particle());
+draw(){const pulse=0.7+0.3*Math.sin(Date.now()*0.002+this.x*0.01);ctx.beginPath();ctx.arc(this.x,this.y,this.size*pulse,0,Math.PI*2);ctx.fillStyle='rgba(212,175,55,'+(this.opacity*pulse)+')';ctx.fill();}}
+for(let i=0;i<100;i++)particles.push(new Particle());
 function animateParticles(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle='rgba(212,175,55,'+(0.08*(1-dist/120))+')';ctx.stroke();}}requestAnimationFrame(animateParticles);}
 animateParticles();
 
 const audio=document.getElementById('bgAudio');
+// 音乐波形可视化
+const waveformCanvas=document.getElementById('waveformCanvas');
+const waveCtx=waveformCanvas.getContext('2d');
+let audioCtx=null, analyser=null, dataArray=null, waveAnimationId=null;
+function initWaveform(){
+  if(audioCtx)return;
+  try{
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    const source=audioCtx.createMediaElementSource(audio);
+    analyser=audioCtx.createAnalyser();
+    analyser.fftSize=64;
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    dataArray=new Uint8Array(analyser.frequencyBinCount);
+  }catch(e){console.log('波形初始化失败:',e);}
+}
+function drawWaveform(){
+  waveAnimationId=requestAnimationFrame(drawWaveform);
+  if(!analyser){waveCtx.clearRect(0,0,waveformCanvas.width,waveformCanvas.height);return;}
+  analyser.getByteFrequencyData(dataArray);
+  waveCtx.clearRect(0,0,waveformCanvas.width,waveformCanvas.height);
+  const barWidth=waveformCanvas.width/dataArray.length;
+  for(let i=0;i<dataArray.length;i++){
+    const barHeight=(dataArray[i]/255)*waveformCanvas.height*0.8;
+    const gradient=waveCtx.createLinearGradient(0,waveformCanvas.height-barHeight,0,waveformCanvas.height);
+    gradient.addColorStop(0,'rgba(212,175,55,0.9)');
+    gradient.addColorStop(1,'rgba(212,175,55,0.3)');
+    waveCtx.fillStyle=gradient;
+    waveCtx.fillRect(i*barWidth,waveformCanvas.height-barHeight,barWidth-1,barHeight);
+  }
+}
+drawWaveform();
+
 const audioBtn=document.getElementById('audioBtn');
 let isPlaying=false;
 let currentSongIdx=0;
@@ -1093,7 +1154,7 @@ const songs=[
 ];
 audio.volume=0.3;
 function playSong(idx){currentSongIdx=idx;audio.src=songs[idx].url;audio.play().then(()=>{isPlaying=true;audioBtn.textContent='❚❚';audioBtn.classList.add('playing');}).catch(()=>{});document.querySelectorAll('.audio-playlist__item').forEach((item,i)=>{item.classList.toggle('active',i===idx);});document.getElementById('nowPlaying').textContent='♫ '+songs[idx].name;}
-audioBtn.addEventListener('click',function(){if(isPlaying){audio.pause();audioBtn.textContent='▶';audioBtn.classList.remove('playing');}else{audio.play().catch(()=>{});audioBtn.textContent='❚❚';audioBtn.classList.add('playing');}isPlaying=!isPlaying;});
+audioBtn.addEventListener('click',function(){initWaveform();if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();if(isPlaying){audio.pause();audioBtn.textContent='▶';audioBtn.classList.remove('playing');}else{audio.play().catch(()=>{});audioBtn.textContent='❚❚';audioBtn.classList.add('playing');}isPlaying=!isPlaying;});
 document.getElementById('volumeSlider').addEventListener('input',function(){audio.volume=parseFloat(this.value);});
 document.getElementById('playlistBtn').addEventListener('click',function(){document.getElementById('audioPlaylist').classList.toggle('open');});
 document.querySelectorAll('.audio-playlist__item').forEach(function(item){item.addEventListener('click',function(){const idx=parseInt(item.dataset.idx);playSong(idx);document.getElementById('audioPlaylist').classList.remove('open');});});
