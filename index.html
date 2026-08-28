@@ -18,7 +18,8 @@ body{font-family:"Noto Serif SC",serif;line-height:1.6;color:#E2E8F0;background:
 ::-webkit-scrollbar-thumb{background:rgba(212,175,55,.25);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:rgba(212,175,55,.45)}
 ::-webkit-scrollbar-corner{background:transparent}
-.loader{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 50%,#0a0a0f 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+.loader{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f url('https://aka.doubaocdn.com/s/jprbrEtoAE') center/cover no-repeat;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+/* 原loader背景：linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 50%,#0a0a0f 100%) */
 .loader::before{content:'';position:absolute;inset:0;background:rgba(10,10,15,.85);backdrop-filter:blur(8px)}
 .loader>*{position:relative;z-index:1}
 .loader.hidden{opacity:0;visibility:hidden}
@@ -709,7 +710,7 @@ img,iframe,video{max-width:100%}
 </section>
 
 <div class="section-spacer"><div class="section-header"><h2 class="section-header__title">百 业 混 剪</h2><p class="section-header__subtitle">生而微末者 · 侠为其声</p></div></div>
-<section class="media-section" id="video" style="background-image:url('https://www.yysls.cn/pc/gw/20220815175950/img/mhys/bz/17_33f9186.jpg?image_process=format,jpg')">
+<section class="media-section" id="video" style="background-image:url('https://aka.doubaocdn.com/s/pThDwYjq9r')"><!-- 原背景：https://www.yysls.cn/pc/gw/20220815175950/img/mhys/bz/17_33f9186.jpg?image_process=format,jpg -->
   <div class="media-section__overlay"></div>
   <div class="video-carousel">
     <button class="video-carousel__btn" onclick="prevVideo()">‹</button>
@@ -720,7 +721,7 @@ img,iframe,video{max-width:100%}
 </section>
 
 <div class="section-spacer"><div class="section-header"><h2 class="section-header__title">活 动 回 顾</h2><p class="section-header__subtitle">那些年一起走过的江湖</p></div></div>
-<section class="media-section" id="activity" style="background-image:url('https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/background/background1.avif')">
+<section class="media-section" id="activity" style="background-image:url('https://aka.doubaocdn.com/s/USVAnitStT')"><!-- 原背景：https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/background/background1.avif -->
   <div class="media-section__overlay"></div>
   <div class="organization-carousel">
     <button class="organization-carousel__btn" onclick="prevOrg()">‹</button>
