@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1A202C">
+<title>云归渚 · 留念站</title>
+<link rel="icon" type="image/svg+xml" href="https://www.yysls.cn/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@300;400;600;700;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Noto Serif SC",serif;line-height:1.6;color:#E2E8F0;background:#0a0a0f;overflow-x:hidden}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+::-webkit-scrollbar-thumb{background:rgba(212,175,55,.25);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(212,175,55,.45)}
+::-webkit-scrollbar-corner{background:transparent}
+.loader{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f url('https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/background/background1.avif') center/cover no-repeat;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+.loader::before{content:'';position:absolute;inset:0;background:rgba(10,10,15,.85);backdrop-filter:blur(8px)}
+.loader>*{position:relative;z-index:1}
+.loader.hidden{opacity:0;visibility:hidden}
+.loader__title{font-family:"Ma Shan Zheng",cursive;font-size:4rem;color:#d4af37;letter-spacing:15px;margin-bottom:30px;text-shadow:0 0 30px rgba(212,175,55,.6);animation:pulse 1.5s infinite}
+.loader__bar{width:280px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.loader__fill{width:0;height:100%;background:linear-gradient(90deg,#d4af37,#f0e6d2);animation:loadFill 1.5s ease forwards;box-shadow:0 0 10px rgba(212,175,55,.8)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes loadFill{to{width:100%}}
+.scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#d4af37,#f0e6d2);z-index:1001;width:0}
+#particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.audio-player{position:fixed;bottom:25px;right:25px;z-index:1000;display:flex;align-items:center;gap:12px;padding:12px 18px;background:rgba(10,10,15,.85);backdrop-filter:blur(15px);border-radius:50px;border:1px solid rgba(212,175,55,.3);box-shadow:0 4px 30px rgba(0,0,0,.6)}
+.audio-player__toggle-btn{width:42px;height:42px;border-radius:50%;border:none;background:linear-gradient(135deg,#d4af37,#b8941f);display:flex;align-items:center;justify-content:center;color:#1a1a2e;font-size:14px;font-weight:bold;cursor:pointer;transition:all .3s}
+.audio-player__toggle-btn:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(212,175,55,.5)}
+.audio-player__toggle-btn.playing{background:linear-gradient(135deg,#51cf66,#37b24d)}
+.audio-player__volume{display:flex;align-items:center;gap:8px}
+.audio-player__volume-slider{width:80px;height:4px;border-radius:2px;background:rgba(255,255,255,.2);outline:none;-webkit-appearance:none;cursor:pointer}
+.audio-player__volume-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#d4af37;cursor:pointer}
+.audio-player__nowplaying{font-size:.8rem;color:#d4af37;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;animation:musicText 2s ease-in-out infinite}
+@keyframes musicText{0%,100%{opacity:.7}50%{opacity:1;text-shadow:0 0 10px rgba(212,175,55,.5)}}
+.audio-player__playlist-btn{width:36px;height:36px;font-size:14px;background:rgba(212,175,55,.15)!important;border:1px solid rgba(212,175,55,.4)!important;color:#d4af37!important;animation:playlistPulse 2s ease-in-out infinite}
+@keyframes playlistPulse{0%,100%{box-shadow:0 0 5px rgba(212,175,55,.3)}50%{box-shadow:0 0 15px rgba(212,175,55,.6)}}
+.audio-player__info{display:flex;flex-direction:column;gap:4px;min-width:180px}
+.audio-player__progress-bar{width:100%;height:4px;background:rgba(255,255,255,.15);border-radius:2px;cursor:pointer;position:relative;overflow:hidden}
+.audio-player__progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#d4af37,#ffd700);border-radius:2px;transition:width .1s;box-shadow:0 0 8px rgba(212,175,55,.6)}
+.audio-player__time{font-size:.7rem;color:#a0aec0;letter-spacing:1px}
+.audio-playlist{position:fixed;bottom:100px;right:25px;width:280px;background:rgba(10,10,15,.95);backdrop-filter:blur(15px);border:1px solid rgba(212,175,55,.3);border-radius:8px;z-index:999;display:none;max-height:260px;overflow-y:auto}
+.audio-playlist.open{display:block}
+.audio-playlist__item{padding:10px 15px;cursor:pointer;transition:all .2s;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px}
+.audio-playlist__item:hover,.audio-playlist__item.active{background:rgba(212,175,55,.15);color:#d4af37}
+.audio-playlist__item-num{width:20px;text-align:center;opacity:.5}
+.main-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(45,55,72,.9);backdrop-filter:blur(10px);border-bottom:2px solid rgba(255,255,255,.1);transition:all .3s}
+.main-nav.scrolled{background:rgba(26,32,44,.98)}
+.main-nav__container{max-width:1400px;margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;align-items:center;height:70px}
+.main-nav__brand{display:flex;align-items:center;gap:12px;cursor:pointer}
+.main-nav__brand img{height:40px}
+.main-nav__logo-text{font-family:"Ma Shan Zheng",cursive;font-size:1.4rem;color:#d4af37;letter-spacing:3px;background:linear-gradient(180deg,#f5e6a8,#d4af37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.main-nav__brand h2{font-family:"ZCOOL XiaoWei",serif;color:#F7FAFC;font-size:1.8rem;font-weight:600;text-shadow:2px 2px 4px rgba(0,0,0,.3);letter-spacing:2px}
+.main-nav__menu{display:flex;list-style:none;gap:20px;align-items:center}
+.main-nav__link{color:#E2E8F0;text-decoration:none;font-weight:500;transition:all .3s;position:relative;padding:8px 0;cursor:pointer;font-size:.9rem;letter-spacing:1px}
+.main-nav__link:hover{color:#F7FAFC}
+.main-nav__link::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:linear-gradient(90deg,#F7FAFC,#E2E8F0);transition:width .3s}
+.main-nav__link:hover::after{width:100%}
+.main-nav__admin-btn{background:transparent;border:1px solid rgba(212,175,55,.4);color:#d4af37;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:.8rem;letter-spacing:1px;transition:all .3s;font-family:inherit}
+.main-nav__admin-btn:hover{background:rgba(212,175,55,.15)}
+.nav-toggle{display:none;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer}
+.hero-section{height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;position:relative;background-size:cover;background-position:center;background-repeat:no-repeat}
+.hero-section__overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,rgba(26,32,44,.7) 0%,rgba(141,54,212,.3) 50%,rgba(74,85,104,.3) 100%);z-index:2}
+.hero-section__content{text-align:center;z-index:3;position:relative}
+.hero-section__logo{width:280px;margin-bottom:25px;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;filter:drop-shadow(0 0 15px rgba(255,255,255,.9)) drop-shadow(0 0 25px rgba(212,175,55,.6)) contrast(1.2) saturate(1.1);opacity:1}
+.hero-section__title{font-family:"Ma Shan Zheng",cursive;font-size:11rem;margin-bottom:25px;color:#e3e2e2;text-shadow:-3px -3px 5px #000,3px -3px 5px #000,-3px 3px 5px #000,3px 3px 5px #000;animation:titleGlow 3s ease-in-out infinite;letter-spacing:10px}
+@keyframes titleGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.2)}}
+.hero-section__subtitle{font-size:1.5rem;color:#CBD5E0;margin-bottom:40px;text-shadow:2px 2px 4px rgba(0,0,0,.3);font-weight:300;letter-spacing:3px}
+.hero-section__actions{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.btn{padding:15px 30px;border:none;border-radius:50px;font-size:1.1rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;position:relative;min-width:120px;font-family:inherit;letter-spacing:2px}
+.btn--primary{background:linear-gradient(135deg,#F7FAFC,#E2E8F0);color:#2D3748;box-shadow:0 4px 15px rgba(247,250,252,.3)}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(247,250,252,.4)}
+.btn--secondary{background:transparent;color:#F7FAFC;border:2px solid #F7FAFC;backdrop-filter:blur(10px)}
+.btn--secondary:hover{background:rgba(247,250,252,.1);transform:translateY(-2px)}
+.hero__scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:10px;color:#a0aec0;font-size:.8rem;letter-spacing:3px;animation:bounce 2s infinite}
+.hero__scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,#d4af37,transparent)}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
+.section{position:relative;z-index:1;padding:100px 0}
+.section-spacer{height:180px;width:100vw;background-color:#1A202C;position:relative;z-index:1;display:flex;align-items:center;justify-content:center}
+.section-header{text-align:center}
+.section-header__title{font-size:3rem;font-weight:700;margin-bottom:15px;color:#E2E8F0;text-shadow:2px 2px 4px rgba(0,0,0,.3);position:relative;letter-spacing:4px;font-family:"Ma Shan Zheng",cursive}
+.section-header__title::after{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:60px;height:3px;background:linear-gradient(90deg,#E2E8F0,#A0AEC0);border-radius:2px}
+.section-header__subtitle{font-family:"Ma Shan Zheng",cursive;font-size:1.2rem;color:#A0AEC0;font-weight:300;margin-top:20px;letter-spacing:3px}
+.container{max-width:1400px;margin:0 auto;padding:0 40px}
+.stats{background:linear-gradient(180deg,#1A202C 0%,#111118 100%)}
+.stats__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:25px}
+.stats__card{background:rgba(20,20,30,.6);border:1px solid rgba(255,255,255,.1);padding:35px 25px;text-align:center;transition:all .4s;position:relative;overflow:hidden}
+.stats__card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#d4af37,transparent);transform:translateX(-100%);transition:transform .6s}
+.stats__card:hover{border-color:rgba(212,175,55,.4);transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.5)}
+.stats__card:hover::before{transform:translateX(0)}
+.stats__icon{font-size:2rem;margin-bottom:12px;opacity:.7}
+.stats__number{font-family:"ZCOOL XiaoWei",serif;font-size:3rem;color:#d4af37;margin-bottom:8px;text-shadow:0 0 20px rgba(212,175,55,.3)}
+.stats__label{font-size:.9rem;color:#a0aec0;letter-spacing:2px}
+.media-section{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100vw;height:100vh;background-size:cover;background-position:center;background-repeat:no-repeat}
+.media-section__overlay{position:absolute;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(135deg,rgba(154,103,211,.3) 10%,rgba(0,0,0,.5) 100%);z-index:0}
+.video-carousel{display:flex;align-items:center;gap:20px;z-index:1;position:relative}
+.video-carousel__btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;width:50px;height:50px;font-size:1.3rem;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+.video-carousel__btn:hover{background:rgba(255,255,255,.2);transform:scale(1.1)}
+.video-carousel__frame{position:relative;background:#000;border:1px solid rgba(255,255,255,.15);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.video-carousel__frame::before,.video-carousel__frame::after{content:'';position:absolute;width:25px;height:25px;border:2px solid #d4af37}
+.video-carousel__frame::before{top:-2px;left:-2px;border-right:none;border-bottom:none}
+.video-carousel__frame::after{bottom:-2px;right:-2px;border-left:none;border-top:none}
+.video-carousel__iframe{width:900px;height:520px;border:none;display:block}
+.video-carousel__indicators{display:flex;justify-content:center;gap:10px;margin-top:25px;position:absolute;bottom:-40px;left:50%;transform:translateX(-50%)}
+.video-carousel__dot{width:30px;height:3px;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s}
+.video-carousel__dot.active{background:#d4af37;width:50px}
+.organization-carousel{display:flex;align-items:center;gap:20px;z-index:1}
+.organization-carousel__btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;width:50px;height:50px;font-size:1.3rem;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+.organization-carousel__btn:hover{background:rgba(255,255,255,.2);transform:scale(1.1)}
+.organization-activity-card{background:linear-gradient(135deg,rgba(189,131,255,.2) 0%,rgba(0,0,0,.85) 100%);overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.7);backdrop-filter:blur(10px);display:flex;gap:30px;padding:30px;min-width:750px;align-items:center;border:1px solid rgba(255,255,255,.1)}
+.organization-carousel__image{width:300px;flex-shrink:0}
+.organization-carousel__image img{width:100%;height:220px;object-fit:cover}
+.organization-carousel__content{flex:1}
+.organization-carousel__content h3{text-align:center;font-size:2rem;font-weight:600;margin-bottom:10px;color:#b7c3da;font-family:"Ma Shan Zheng",cursive;letter-spacing:3px}
+.organization-carousel__content p{text-align:center;color:#A0AEC0;font-size:1.05rem;margin-bottom:15px;line-height:1.6}
+.organization-carousel__stats{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.organization-carousel__stats span{background:#b7c3da;color:#2d384b;padding:4px 12px;border-radius:15px;font-size:.85rem;font-weight:500}
+.character-showcase{position:relative;width:100vw;min-height:100vh;background:linear-gradient(135deg,rgba(154,103,211,.15) 10%,rgba(0,0,0,.85) 100%);padding-bottom:50px}
+.character-showcase__sidebar{display:flex;flex-direction:column;justify-content:flex-start;align-items:center;height:100vh;width:360px;gap:8px;background:rgba(26,32,44,.95);padding:15px 10px;box-shadow:4px 0 20px rgba(0,0,0,.5);position:relative;z-index:10;margin:0 0 0 30px;border-right:1px solid rgba(212,175,55,.2);overflow-y:auto;overflow-x:hidden}
+.character-showcase__search{width:100%;padding:8px 12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:4px;font-size:.85rem;outline:none;font-family:inherit;margin-bottom:10px}
+.character-showcase__search::placeholder{color:rgba(255,255,255,.4)}
+.character-showcase__filters{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;width:100%}
+.character-showcase__filter{padding:3px 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:#a0aec0;font-size:.7rem;cursor:pointer;transition:all .2s;border-radius:3px;font-family:inherit}
+.character-showcase__filter.active,.character-showcase__filter:hover{background:rgba(212,175,55,.2);border-color:rgba(212,175,55,.4);color:#d4af37}
+.character-showcase__active{display:flex;flex-wrap:wrap;justify-content:flex-start;align-content:flex-start;gap:10px;flex:1;overflow-y:auto;width:100%;padding:12px 6px;min-height:0}
+.character-showcase__item{font-size:.75rem;display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:8px 4px;transition:background .2s;max-width:100px;color:#fff;border-radius:4px;flex:0 0 auto}
+.character-showcase__item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center;display:block;color:#E2E8F0;font-size:.75rem;line-height:1.2;margin-top:2px}
+.character-showcase__item.active,.character-showcase__item:hover{background:linear-gradient(135deg,#2D3748 60%,#4A5568 100%);box-shadow:0 4px 15px rgba(0,0,0,.5)}
+.avatar-wrap{width:80px;height:80px;overflow:hidden;border-radius:4px;border:2px solid #E2E8F0;margin-bottom:6px;flex-shrink:0}
+.avatar-wrap img{width:100%;height:100%;object-fit:cover;transform:none;border:none;margin:0;border-radius:0}
+.character-showcase__pagination{position:absolute;top:50%;right:-70px;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:8px}
+.character-showcase__page-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;width:30px;height:30px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.character-showcase__page-btn:hover{background:rgba(212,175,55,.2)}
+.character-showcase__page-indicators{display:flex;flex-direction:column;gap:5px;align-items:center}
+.character-showcase__page-indicator{width:25px;height:25px;border-radius:50%;background:rgba(247,250,252,.2);color:#CBD5E0;font-size:12px;font-weight:600;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;border:2px solid transparent}
+.character-showcase__page-indicator.active{background:linear-gradient(135deg,#F7FAFC,#E2E8F0);color:#2D3748;border-color:#4A5568;box-shadow:0 0 15px rgba(247,250,252,.4)}
+.character-showcase__main{position:absolute;top:0;left:0;right:0;bottom:0;z-index:1}
+.character-showcase__artwork{position:absolute;top:0;left:310px;width:calc(100% - 310px);height:100%;display:flex;justify-content:center;align-items:center;overflow:hidden}
+.character-showcase__artwork-container{width:100%;height:100%;cursor:pointer;position:relative}
+.character-showcase__artwork-container img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .4s;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.character-showcase__artwork-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,.4) 50%,transparent 100%)}
+.character-showcase__info{position:absolute;left:35%;top:50%;transform:translateY(-50%);z-index:2;width:600px;padding:30px}
+.character-showcase__name{font-size:5rem;color:#fff;font-weight:700;margin-bottom:8px;text-shadow:0 0 5px #000,0 0 10px #000,0 0 15px #000;font-family:"Ma Shan Zheng",cursive;letter-spacing:5px;cursor:pointer;transition:color .3s}
+.character-showcase__name:hover{color:#d4af37}
+.character-showcase__role{color:#E2E8F0;font-size:1.8rem;margin-bottom:12px;text-shadow:0 0 5px #000,0 0 10px #000}
+.character-showcase__power{display:inline-block;background:rgba(212,175,55,.2);border:1px solid rgba(212,175,55,.4);color:#d4af37;padding:3px 12px;border-radius:15px;font-size:.85rem;margin-bottom:12px}
+.character-showcase__tags{margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px}
+.character-showcase__tag{display:inline-block;background:linear-gradient(135deg,#EDF2F7,#E2E8F0);color:#4A5568;padding:5px 14px;border-radius:15px;font-size:.9rem;font-weight:500}
+.character-showcase__description{color:#fff;font-size:1.3rem;line-height:1.7;width:80%;text-shadow:0 0 5px #000,0 0 10px #000}
+.character-showcase__hint{position:absolute;bottom:30px;right:30px;color:rgba(255,255,255,.4);font-size:.8rem;letter-spacing:2px;z-index:2}
+.rank-section{background:linear-gradient(180deg,#111118 0%,#1A202C 100%)}
+.rank__tabs{display:flex;justify-content:center;gap:15px;margin-bottom:40px}
+.rank__tab{padding:10px 25px;background:transparent;border:1px solid rgba(255,255,255,.2);color:#a0aec0;cursor:pointer;transition:all .3s;font-size:.9rem;letter-spacing:2px;font-family:inherit;border-radius:4px}
+.rank__tab.active,.rank__tab:hover{background:rgba(212,175,55,.15);border-color:rgba(212,175,55,.5);color:#d4af37}
+.rank__list{max-width:800px;margin:0 auto;max-height:600px;overflow-y:auto;padding-right:10px}
+.rank__list::-webkit-scrollbar{width:6px}
+.rank__list::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:3px}
+.rank__list::-webkit-scrollbar-thumb{background:rgba(212,175,55,.4);border-radius:3px}
+.rank__list::-webkit-scrollbar-thumb:hover{background:rgba(212,175,55,.6)}
+.rank__item{display:flex;align-items:center;gap:20px;padding:15px 25px;background:rgba(20,20,30,.5);border:1px solid rgba(255,255,255,.08);margin-bottom:10px;transition:all .3s;border-radius:4px}
+.rank__item:hover{border-color:rgba(212,175,55,.3);transform:translateX(5px)}
+.rank__item--top1{border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.05)}
+.rank__item--top2{border-color:rgba(192,192,192,.4);background:rgba(192,192,192,.05)}
+.rank__item--top3{border-color:rgba(205,127,50,.4);background:rgba(205,127,50,.05)}
+.rank__num{width:40px;text-align:center;font-family:"ZCOOL XiaoWei",serif;font-size:1.5rem;color:#d4af37}
+.rank__avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,175,55,.3);cursor:pointer;transition:all .3s}
+.rank__avatar:hover{transform:scale(1.15);box-shadow:0 0 15px rgba(212,175,55,.6);border-color:#d4af37}
+.rank__info{flex:1}
+.rank__name{font-size:1.1rem;color:#f0e6d2;margin-bottom:3px}
+.rank__role{font-size:.8rem;color:#a0aec0}
+.rank__value{font-family:"ZCOOL XiaoWei",serif;font-size:1.3rem;color:#d4af37}
+.timeline-section{background:#1A202C}
+.timeline{position:relative;max-width:900px;margin:0 auto;padding-left:40px}
+.timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#d4af37,transparent)}
+.timeline__item{position:relative;margin-bottom:40px;padding-left:30px}
+.timeline__item::before{content:'';position:absolute;left:-32px;top:5px;width:16px;height:16px;border-radius:50%;background:#d4af37;border:3px solid #1A202C;box-shadow:0 0 15px rgba(212,175,55,.5)}
+.timeline__date{font-family:"ZCOOL XiaoWei",serif;font-size:1rem;color:#d4af37;margin-bottom:8px;letter-spacing:2px}
+.timeline__title{font-size:1.3rem;color:#f0e6d2;margin-bottom:8px;font-family:"Ma Shan Zheng",cursive;letter-spacing:2px}
+.timeline__desc{font-size:.95rem;color:#a0aec0;line-height:1.7}
+.rules-section{background:linear-gradient(180deg,#1A202C 0%,#111118 100%)}
+.rules__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:25px;max-width:1000px;margin:0 auto}
+.rules__card{background:rgba(20,20,30,.5);border:1px solid rgba(255,255,255,.08);padding:30px;border-radius:4px;transition:all .3s}
+.rules__card:hover{border-color:rgba(212,175,55,.3)}
+.rules__card h3{font-size:1.3rem;color:#d4af37;margin-bottom:15px;font-family:"Ma Shan Zheng",cursive;letter-spacing:3px}
+.rules__card ul{list-style:none}
+.rules__card li{padding:8px 0;color:#a0aec0;font-size:.95rem;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px}
+.rules__card li::before{content:'◆';color:#d4af37;font-size:.6rem}
+.gallery{background:linear-gradient(180deg,#111118 0%,#1A202C 100%)}
+.gallery__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.gallery__item{position:relative;aspect-ratio:1;overflow:hidden;cursor:pointer}
+.gallery__item img{width:100%;height:100%;object-fit:cover;transition:all .5s;filter:grayscale(30%) brightness(.8)}
+.gallery__item:hover img{transform:scale(1.08);filter:grayscale(0%) brightness(1)}
+.gallery__item-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to top,rgba(10,10,15,.9) 0%,transparent 50%);opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:20px}
+.gallery__item:hover .gallery__item-overlay{opacity:1}
+.gallery__item-title{font-family:"ZCOOL XiaoWei",serif;font-size:1rem;color:#d4af37;letter-spacing:2px;transform:translateY(20px);transition:transform .3s}
+.gallery__item:hover .gallery__item-title{transform:translateY(0)}
+.gallery__item--wide{grid-column:span 2}
+.gallery__item--tall{grid-row:span 2}
+.join{background:linear-gradient(180deg,#1A202C 0%,#111118 100%);text-align:center}
+.join__content{max-width:700px;margin:0 auto}
+.join__text{font-size:1.05rem;color:#a0aec0;line-height:2;margin-bottom:35px;letter-spacing:1px}
+.join__form{max-width:500px;margin:0 auto 35px;text-align:left}
+.join__form-group{margin-bottom:18px}
+.join__form-label{display:block;font-size:.85rem;color:#a0aec0;margin-bottom:6px;letter-spacing:1px}
+.join__form-input,.join__form-textarea{width:100%;padding:10px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:4px;font-size:.9rem;outline:none;transition:border-color .3s;font-family:inherit}
+.join__form-input:focus,.join__form-textarea:focus{border-color:rgba(212,175,55,.5)}
+.join__form-textarea{resize:vertical;min-height:80px}
+.message-wall{max-width:700px;margin:0 auto;text-align:left}
+.message-wall__title{text-align:center;font-size:1.3rem;color:#d4af37;letter-spacing:4px;margin-bottom:25px;font-family:'Ma Shan Zheng',cursive}
+.message-wall__scroll{height:420px;overflow-y:hidden;overflow-x:hidden;position:relative;mask-image:linear-gradient(to bottom,transparent 0%,#000 8%,#000 92%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 8%,#000 92%,transparent 100%)}
+.message-wall__list{display:flex;flex-direction:column;gap:12px;padding:4px 0}
+.message-wall__item{background:rgba(255,255,255,.04);border:1px solid rgba(212,175,55,.15);padding:15px 20px;border-radius:4px;transition:all .3s}
+.message-wall__item:hover{border-color:rgba(212,175,55,.4);background:rgba(212,175,55,.05)}
+.message-wall__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.message-wall__name{color:#d4af37;font-size:1rem;font-weight:600}
+.message-wall__tag{background:rgba(212,175,55,.15);color:#d4af37;font-size:.75rem;padding:2px 10px;border-radius:10px}
+.message-wall__content{color:#cbd5e0;font-size:.9rem;line-height:1.6;margin-bottom:6px}
+.message-wall__time{color:#718096;font-size:.75rem}
+.message-wall__empty{text-align:center;color:#718096;font-size:.9rem;padding:30px 0}
+.message-wall__actions{display:flex;align-items:center;gap:12px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)}
+.message-wall__like{display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(212,175,55,.25);color:#cbd5e0;font-size:.8rem;padding:4px 14px;border-radius:16px;cursor:pointer;transition:all .3s;font-family:inherit}
+.message-wall__like:hover,.message-wall__like.liked{border-color:#d4af37;color:#d4af37;background:rgba(212,175,55,.1)}
+.message-wall__like .heart{color:#e74c3c;font-style:normal}
+.message-wall__reply-btn{display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,.15);color:#a0aec0;font-size:.8rem;padding:4px 14px;border-radius:16px;cursor:pointer;transition:all .3s;font-family:inherit}
+.message-wall__reply-btn:hover{border-color:#d4af37;color:#d4af37}
+.message-wall__replies{margin-top:12px;padding:10px 14px;background:rgba(0,0,0,.25);border-left:2px solid rgba(212,175,55,.4);border-radius:0 4px 4px 0;display:flex;flex-direction:column;gap:8px}
+.message-wall__reply-item{font-size:.85rem;color:#a0aec0;line-height:1.5}
+.message-wall__reply-name{color:#d4af37;font-weight:600}
+.message-wall__reply-time{color:#718096;font-size:.7rem;margin-left:8px}
+.message-wall__reply-form{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.message-wall__reply-form input{flex:1;min-width:120px;padding:6px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:4px;font-size:.8rem;outline:none;font-family:inherit}
+.message-wall__reply-form input:focus{border-color:rgba(212,175,55,.5)}
+.message-wall__reply-form .rbtn{padding:6px 16px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#1a1a2e;border:none;border-radius:4px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit}
+.message-wall__reply-form .rbtn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,175,55,.35)}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:linear-gradient(135deg,rgba(30,32,48,.96),rgba(20,20,32,.96));border:1px solid rgba(212,175,55,.5);color:#f7fafc;padding:12px 28px;border-radius:4px;font-size:.9rem;letter-spacing:2px;box-shadow:0 8px 30px rgba(0,0,0,.6),0 0 20px rgba(212,175,55,.15);z-index:9999;opacity:0;pointer-events:none;transition:all .4s;font-family:inherit}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.join__btn{display:inline-block;padding:14px 45px;font-size:1rem;letter-spacing:4px;background:transparent;color:#d4af37;border:1px solid #d4af37;cursor:pointer;transition:all .4s;text-decoration:none;font-family:inherit;position:relative;overflow:hidden;border-radius:4px}
+.join__btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,175,55,.15),transparent);transition:left .5s}
+.join__btn:hover{background:rgba(212,175,55,.1);transform:translateY(-3px);box-shadow:0 10px 30px rgba(212,175,55,.2)}
+.join__btn:hover::before{left:100%}
+.faq-section{background:#111118}
+.faq__list{max-width:800px;margin:0 auto}
+.faq__item{background:rgba(20,20,30,.5);border:1px solid rgba(255,255,255,.08);margin-bottom:12px;border-radius:4px;overflow:hidden;transition:all .3s}
+.faq__item:hover{border-color:rgba(212,175,55,.3)}
+.faq__question{padding:18px 25px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:1rem;color:#f0e6d2;letter-spacing:1px}
+.faq__question-icon{color:#d4af37;font-size:1.2rem;transition:transform .3s}
+.faq__item.open .faq__question-icon{transform:rotate(45deg)}
+.faq__answer{max-height:0;overflow:hidden;transition:max-height .3s;padding:0 25px;color:#a0aec0;font-size:.95rem;line-height:1.8}
+.faq__item.open .faq__answer{max-height:300px;padding:0 25px 20px}
+.footer{background:#08080c;padding:55px 0 25px;border-top:1px solid rgba(212,175,55,.1)}
+.footer__grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:35px}
+.footer__brand h3{font-family:"ZCOOL XiaoWei",serif;font-size:1.6rem;color:#d4af37;letter-spacing:4px;margin-bottom:12px}
+.footer__brand p{font-size:.88rem;color:#718096;line-height:1.8}
+.footer__col h4{font-size:.95rem;color:#f0e6d2;margin-bottom:15px;letter-spacing:2px}
+.footer__col p,.footer__col a{font-size:.85rem;color:#718096;line-height:2;text-decoration:none;display:block;transition:color .3s;cursor:pointer}
+.footer__col a:hover{color:#d4af37}
+.footer__social{display:flex;gap:12px;margin-top:10px}
+.footer__social-icon{width:36px;height:36px;border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;color:#a0aec0;cursor:pointer;transition:all .3s;font-size:.9rem;border-radius:4px}
+.footer__social-icon:hover{border-color:#d4af37;color:#d4af37;transform:translateY(-2px)}
+.footer__bottom{text-align:center;padding-top:20px;border-top:1px solid rgba(255,255,255,.05);font-size:.8rem;color:#4a5568;letter-spacing:2px}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
+.modal.active{display:flex;opacity:1}
+.modal__content{background:linear-gradient(135deg,#15151f,#0d0d14);border:1px solid rgba(212,175,55,.3);max-width:800px;width:90%;max-height:85vh;overflow-y:auto;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.modal__close{position:absolute;top:15px;right:15px;width:35px;height:35px;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.1rem;cursor:pointer;z-index:10;transition:all .3s}
+.modal__close:hover{background:rgba(212,175,55,.3);color:#d4af37}
+.modal__hero{display:flex;gap:30px;padding:35px}
+.modal__avatar{width:180px;height:180px;flex-shrink:0;border:2px solid rgba(212,175,55,.4);overflow:hidden}
+.modal__avatar img{width:100%;height:100%;object-fit:cover}
+.modal__info{flex:1}
+.modal__name{font-family:"Ma Shan Zheng",cursive;font-size:2.3rem;color:#f0e6d2;letter-spacing:4px;margin-bottom:6px}
+.modal__role{font-size:1rem;color:#d4af37;letter-spacing:2px;margin-bottom:10px}
+.modal__power{display:inline-block;background:rgba(212,175,55,.2);border:1px solid rgba(212,175,55,.4);color:#d4af37;padding:3px 12px;border-radius:15px;font-size:.85rem;margin-bottom:12px}
+.modal__tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px}
+.modal__tag{font-size:.8rem;color:#a0aec0;padding:4px 12px;border:1px solid rgba(212,175,55,.2);letter-spacing:1px;border-radius:3px}
+.modal__desc{font-size:.95rem;color:#a0aec0;line-height:1.8}
+.modal__gallery{padding:0 35px 35px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.modal__gallery img{width:100%;aspect-ratio:1;object-fit:cover;cursor:pointer;border:1px solid rgba(255,255,255,.1);transition:all .3s}
+.modal__gallery img:hover{border-color:#d4af37;transform:scale(1.02)}
+.lightbox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:3000;display:none;align-items:center;justify-content:center}
+.lightbox.active{display:flex}
+.lightbox img{max-width:90%;max-height:90%;object-fit:contain}
+.lightbox__close{position:absolute;top:30px;right:30px;width:45px;height:45px;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.4rem;cursor:pointer}
+.lightbox__nav{position:absolute;top:50%;transform:translateY(-50%);width:55px;height:55px;background:rgba(255,255,255,.1);border:1px solid rgba(212,175,55,.3);color:#d4af37;font-size:2rem;cursor:pointer;transition:all .3s;border-radius:4px}
+.lightbox__nav:hover{background:rgba(212,175,55,.2);box-shadow:0 0 20px rgba(212,175,55,.4)}
+.lightbox__prev{left:40px}
+.lightbox__next{right:40px}
+.lightbox__counter{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);color:#d4af37;font-size:1rem;letter-spacing:2px}
+.admin-panel{position:fixed;top:0;right:-500px;width:500px;height:100%;background:#111118;z-index:2500;transition:right .4s;box-shadow:-5px 0 30px rgba(0,0,0,.7);overflow-y:auto;border-left:1px solid rgba(212,175,55,.2)}
+.admin-panel.open{right:0}
+.admin-panel__header{padding:20px 25px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#111118;z-index:1}
+.admin-panel__title{font-family:"ZCOOL XiaoWei",serif;font-size:1.3rem;color:#d4af37;letter-spacing:3px}
+.admin-panel__close{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;padding:5px 10px}
+.admin-panel__body{padding:20px 25px}
+.admin-panel__section{margin-bottom:25px}
+.admin-panel__section-title{font-size:.9rem;color:#a0aec0;margin-bottom:12px;letter-spacing:2px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+.admin-panel__input,.admin-panel__textarea{width:100%;padding:8px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:4px;font-size:.85rem;outline:none;margin-bottom:10px;font-family:inherit}
+.admin-panel__textarea{resize:vertical;min-height:60px}
+.admin-panel__btn{padding:8px 20px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#1a1a2e;border:none;border-radius:4px;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .3s;font-family:inherit;letter-spacing:1px}
+.admin-panel__btn:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(212,175,55,.3)}
+.admin-panel__btn--secondary{background:transparent;color:#a0aec0;border:1px solid rgba(255,255,255,.2)}
+.admin-panel__btn--secondary:hover{background:rgba(255,255,255,.08);color:#fff}
+.admin-panel__member-item{display:flex;align-items:center;gap:10px;padding:8px;background:rgba(255,255,255,.04);border-radius:4px;margin-bottom:6px}
+.admin-panel__member-item img{width:35px;height:35px;object-fit:cover;border-radius:4px}
+.admin-panel__member-item span{flex:1;font-size:.85rem;color:#e2e8f0}
+.admin-panel__member-item button{background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:1rem;padding:2px 6px}
+.admin-panel__label{display:block;font-size:.8rem;color:#a0aec0;margin-bottom:5px;letter-spacing:1px}
+.admin-panel__color{width:60px;height:35px;border:1px solid rgba(255,255,255,.15);background:transparent;cursor:pointer;margin-bottom:10px;border-radius:4px}
+.admin-panel__checkbox{display:flex;align-items:center;gap:8px;font-size:.85rem;color:#e2e8f0;margin-bottom:8px;cursor:pointer}
+.admin-panel__checkbox input{width:16px;height:16px;accent-color:#d4af37;cursor:pointer}
+.admin-panel__song-item{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.admin-panel__song-item input{flex:1;padding:6px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:4px;font-size:.8rem;font-family:inherit}
+.admin-panel__song-item button{background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:1rem;padding:2px 6px}
+.admin-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:20px}
+.admin-tab{flex:1;padding:12px 0;text-align:center;cursor:pointer;font-size:.9rem;color:#a0aec0;transition:all .3s;border-bottom:2px solid transparent;letter-spacing:1px}
+.admin-tab:hover{color:#d4af37}
+.admin-tab.active{color:#d4af37;border-bottom-color:#d4af37;background:rgba(212,175,55,.05)}
+.admin-tab-content{display:none}
+.admin-tab-content.active{display:block}
+.member-edit-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:4000;display:none;align-items:center;justify-content:center;padding:20px}
+.member-edit-modal.active{display:flex}
+.member-edit-modal__box{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(212,175,55,.3);border-radius:8px;padding:30px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
+.member-edit-modal__title{font-size:1.4rem;color:#d4af37;text-align:center;margin-bottom:20px;letter-spacing:4px;font-family:'Ma Shan Zheng',cursive}
+.member-edit-modal__grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:15px}
+.member-edit-modal__actions{display:flex;gap:15px;justify-content:center;margin-top:20px}
+.back-top{position:fixed;bottom:25px;left:25px;width:45px;height:45px;background:rgba(20,20,30,.85);border:1px solid rgba(212,175,55,.3);color:#d4af37;font-size:1.2rem;cursor:pointer;z-index:999;display:none;align-items:center;justify-content:center;transition:all .3s;backdrop-filter:blur(10px);border-radius:4px}
+.back-top:hover{background:rgba(212,175,55,.2);transform:translateY(-3px)}
+.back-top.visible{display:flex}
+.reveal{opacity:0;transform:translateY(30px);transition:all .7s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:1199px){.container,.main-nav__container{max-width:100%}.stats__grid{grid-template-columns:repeat(2,1fr)}.video-carousel__iframe{width:700px;height:400px}.organization-activity-card{min-width:650px}.character-showcase__info{left:35%;width:500px}.character-showcase__name{font-size:3.5rem}.gallery__grid{grid-template-columns:repeat(3,1fr)}.footer__grid{grid-template-columns:1fr 1fr}.rules__grid{grid-template-columns:1fr}}
+@media(max-width:768px){.character-showcase{display:flex;flex-direction:column;min-height:auto}.main-nav__menu{display:none;position:absolute;top:70px;left:0;right:0;background:rgba(26,32,44,.98);flex-direction:column;padding:20px;gap:15px}.main-nav__menu.open{display:flex}.nav-toggle{display:block}.hero-section__title{font-size:4rem;letter-spacing:4px}.hero-section__logo{width:150px}.hero-section__actions{flex-direction:column;align-items:center}.section-header__title{font-size:2.2rem;letter-spacing:3px}.stats__grid{grid-template-columns:1fr}.video-carousel__btn{display:none}.video-carousel__iframe{width:90vw;height:50vw}.organization-carousel__btn{display:none}.organization-activity-card{flex-direction:column;min-width:90vw;padding:20px}.organization-carousel__image{width:100%}.character-showcase__sidebar{width:100%;height:auto;margin:70px 0 0 0;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:15px;align-items:flex-start}.character-showcase__pagination{display:none}.character-showcase__search,.character-showcase__filters{display:none}.character-showcase__artwork{position:relative;width:100%;height:55vh;margin-top:10px}.character-showcase__info{position:relative;left:auto;top:auto;transform:none;width:100%;padding:20px 15px 30px}.character-showcase__name{font-size:2.5rem}.character-showcase__description{font-size:1rem;width:100%}.gallery__grid{grid-template-columns:repeat(2,1fr)}.gallery__item--wide,.gallery__item--tall{grid-column:span 1;grid-row:span 1}.modal__hero{flex-direction:column;padding:25px}.modal__avatar{width:140px;height:140px;margin:0 auto}.modal__gallery{grid-template-columns:repeat(2,1fr);padding:0 25px 25px}.footer__grid{grid-template-columns:1fr;gap:25px}.rules__grid{grid-template-columns:1fr}.admin-panel{width:100%;right:-100%}.rank__tabs{flex-wrap:wrap}.audio-playlist{right:10px;width:calc(100vw - 20px)}.cursor-glow{display:none}.message-wall{max-width:90vw}.member-edit-modal__box{max-width:90vw;padding:20px}.member-edit-modal__grid{grid-template-columns:1fr}.rank__list{max-height:50vh}.timeline::before{left:20px}.timeline__item{padding-left:50px}.timeline__item::before{left:14px}.faq__item{padding:15px}.loader__title{font-size:2.5rem}.hero-section__subtitle{font-size:.9rem;padding:0 20px}.audio-player{left:10px;right:10px;bottom:10px;width:auto}.audio-player__progress-area{margin:0 8px}.lightbox__prev{left:15px}.lightbox__next{right:15px}.lightbox__nav{width:45px;height:45px;font-size:1.5rem}.admin-panel__member-item{flex-wrap:wrap}.admin-panel__song-item{flex-wrap:wrap}.admin-panel__song-item input{flex:1 1 100%}}
+/* ===== V8 光效增强 ===== */
+.cursor-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.15) 0%,rgba(212,175,55,.05) 40%,transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity .3s;mix-blend-mode:screen}
+.cursor-dot{position:fixed;width:8px;height:8px;border-radius:50%;background:#d4af37;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 10px #d4af37,0 0 20px rgba(212,175,55,.5);transition:width .2s,height .2s}
+.cursor-dot.hover{width:20px;height:20px;background:rgba(212,175,55,.3);border:1px solid #d4af37}
+.hero-section__title{color:#f0e6d2;text-shadow:0 0 20px rgba(212,175,55,.5),0 0 40px rgba(212,175,55,.3),-3px -3px 5px #000,3px -3px 5px #000,-3px 3px 5px #000,3px 3px 5px #000;animation:titleGlow 3s ease-in-out infinite,titleFloat 6s ease-in-out infinite}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero-section__subtitle{animation:fadeInUp 1.5s ease .5s both}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-section__overlay{background:linear-gradient(180deg,rgba(10,10,15,.3) 0%,rgba(10,10,15,.6) 50%,rgba(10,10,15,.95) 100%)}
+.hero-section::after{content:'';position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to top,#0a0a0f,transparent);z-index:1}
+.btn--primary{background:linear-gradient(135deg,#d4af37,#b8941f);color:#1a1a2e;position:relative;overflow:hidden}
+.btn--primary::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s}
+.btn--primary:hover::before{left:100%}
+.btn--primary:hover{box-shadow:0 0 30px rgba(212,175,55,.6),0 0 60px rgba(212,175,55,.3);transform:translateY(-3px)}
+.btn--secondary:hover{box-shadow:0 0 20px rgba(212,175,55,.4);border-color:#d4af37;color:#d4af37;transform:translateY(-3px)}
+.stats__card{position:relative;overflow:hidden;transition:all .4s;border:1px solid rgba(212,175,55,.1)}
+.stats__card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(212,175,55,.1),transparent 30%);animation:rotate 4s linear infinite;opacity:0;transition:opacity .4s}
+.stats__card:hover::before{opacity:1}
+.stats__card:hover{transform:translateY(-8px);box-shadow:0 15px 40px rgba(212,175,55,.2);border-color:rgba(212,175,55,.4)}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.stats__card::after{content:'';position:absolute;inset:1px;background:linear-gradient(135deg,rgba(30,30,45,.95),rgba(20,20,30,.98));z-index:-1}
+.section-header__title{position:relative;display:inline-block}
+.section-header__title::after{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:60px;height:2px;background:linear-gradient(90deg,transparent,#d4af37,transparent);animation:lineGlow 2s ease-in-out infinite}
+@keyframes lineGlow{0%,100%{opacity:.5;width:40px}50%{opacity:1;width:80px}}
+.character-showcase__item{position:relative;border-radius:4px;transition:background .3s,transform .3s}
+.character-showcase__item:hover{background:rgba(212,175,55,.15);transform:scale(1.08)}
+.avatar-wrap{transition:border-color .3s,box-shadow .3s}
+.character-showcase__item:hover .avatar-wrap{border-color:#d4af37;box-shadow:0 0 15px rgba(212,175,55,.6)}
+.character-showcase__item.active .avatar-wrap{border-color:#d4af37;box-shadow:0 0 20px rgba(212,175,55,.8)}
+.character-showcase__artwork-container::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(212,175,55,.15),transparent 60%);pointer-events:none}
+.character-showcase__artwork-container:hover img{transform:scale(1.03);filter:brightness(1.1)}
+.character-showcase__name:hover{color:#d4af37;text-shadow:0 0 30px rgba(212,175,55,.8)}
+.rank__item{transition:all .3s;position:relative;overflow:hidden}
+.rank__item:hover{background:rgba(212,175,55,.08);transform:translateX(5px)}
+.rank__item--top1{background:linear-gradient(90deg,rgba(212,175,55,.15),transparent);position:relative}
+.rank__item--top1::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#d4af37,#ffd700);box-shadow:0 0 10px #d4af37}
+.gallery__item img{transition:all .5s}
+.gallery__item:hover img{transform:scale(1.1);filter:brightness(1.15) saturate(1.2)}
+.gallery__item-overlay{background:linear-gradient(to top,rgba(0,0,0,.9) 0%,rgba(0,0,0,.3) 50%,transparent 100%);opacity:0;transition:opacity .3s}
+.gallery__item:hover .gallery__item-overlay{opacity:1}
+.gallery__item::after{content:'';position:absolute;inset:0;border:2px solid transparent;transition:all .3s;pointer-events:none}
+.gallery__item:hover::after{border-color:rgba(212,175,55,.6);box-shadow:inset 0 0 30px rgba(212,175,55,.2)}
+.rules__card{transition:all .4s;position:relative;overflow:hidden}
+.rules__card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(212,175,55,.15);border-color:rgba(212,175,55,.4)}
+.rules__card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#d4af37,transparent);transform:scaleX(0);transition:transform .4s}
+.rules__card:hover::before{transform:scaleX(1)}
+.timeline__item::before{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 15px rgba(212,175,55,.5)}50%{box-shadow:0 0 25px rgba(212,175,55,.9),0 0 40px rgba(212,175,55,.4)}}
+.timeline__item{transition:all .3s}
+.timeline__item:hover{transform:translateX(8px)}
+.timeline__item:hover .timeline__title{color:#d4af37}
+.faq__item{transition:all .3s;border:1px solid transparent}
+.faq__item:hover{border-color:rgba(212,175,55,.2);background:rgba(212,175,55,.03)}
+.faq__item.active{border-color:rgba(212,175,55,.3);background:rgba(212,175,55,.05)}
+.join__btn:hover{background:#d4af37;color:#1a1a2e;box-shadow:0 0 30px rgba(212,175,55,.6);transform:translateY(-2px)}
+.join__btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);transition:left .6s}
+.join__btn:hover::before{left:100%}
+.join__form-input:focus,.join__form-textarea:focus{box-shadow:0 0 15px rgba(212,175,55,.2);border-color:rgba(212,175,55,.6)}
+.organization-activity-card{transition:all .4s}
+.organization-activity-card:hover{box-shadow:0 20px 50px rgba(189,131,255,.2);transform:scale(1.01)}
+.organization-carousel__image img{transition:all .5s}
+.organization-activity-card:hover .organization-carousel__image img{transform:scale(1.05)}
+.modal{animation:modalFadeIn .3s ease}
+@keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+.modal__content{animation:modalSlideUp .4s ease}
+@keyframes modalSlideUp{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal__gallery img:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(212,175,55,.5);border-color:rgba(212,175,55,.5)}
+.lightbox img{animation:lightboxZoom .3s ease}
+@keyframes lightboxZoom{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.main-nav{border-bottom:1px solid rgba(255,255,255,.05)}
+.main-nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.5),transparent);transform:scaleX(0);transition:transform .3s}
+.main-nav.scrolled::after{transform:scaleX(1)}
+.main-nav__link::after{background:linear-gradient(90deg,#d4af37,#ffd700)}
+.audio-player{box-shadow:0 4px 30px rgba(0,0,0,.6),0 0 20px rgba(212,175,55,.1)}
+.audio-player__toggle-btn:hover{box-shadow:0 0 25px rgba(212,175,55,.7)}
+.audio-playlist__item.active{position:relative}
+.audio-playlist__item.active::before{content:'♪';position:absolute;left:8px;color:#d4af37;animation:musicNote 1s ease-in-out infinite}
+@keyframes musicNote{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.back-top:hover{box-shadow:0 0 20px rgba(212,175,55,.5);transform:translateY(-3px)}
+.scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#d4af37,#ffd700,#d4af37);z-index:2000;transition:width .1s;box-shadow:0 0 10px rgba(212,175,55,.8)}
+.leaf{position:fixed;top:-20px;color:rgba(212,175,55,.6);pointer-events:none;z-index:1;animation:leafFall linear infinite}
+@keyframes leafFall{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:.8}90%{opacity:.8}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.section{position:relative;z-index:2}
+.character-showcase__artwork-container img{transition:all .5s}
+/* 排行榜大图查看器 */
+.rank-viewer{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:4000;display:none;align-items:center;justify-content:center;animation:modalFadeIn .3s ease}
+.rank-viewer.active{display:flex}
+.rank-viewer__content{text-align:center;animation:modalSlideUp .4s ease}
+.rank-viewer__img{width:350px;height:350px;object-fit:cover;border:3px solid rgba(212,175,55,.5);box-shadow:0 0 50px rgba(212,175,55,.4);margin-bottom:20px}
+.rank-viewer__name{font-family:"Ma Shan Zheng",cursive;font-size:2.5rem;color:#d4af37;margin-bottom:8px;text-shadow:0 0 20px rgba(212,175,55,.5)}
+.rank-viewer__role{font-size:1.1rem;color:#a0aec0;letter-spacing:2px}
+.rank-viewer__close{position:absolute;top:30px;right:30px;width:45px;height:45px;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:1.4rem;cursor:pointer;transition:all .3s;border-radius:4px}
+.rank-viewer__close:hover{background:rgba(212,175,55,.3);transform:rotate(90deg)}
+.rank-viewer__btn{position:absolute;top:50%;transform:translateY(-50%);width:60px;height:60px;background:rgba(255,255,255,.1);border:1px solid rgba(212,175,55,.3);color:#d4af37;font-size:2rem;cursor:pointer;transition:all .3s;border-radius:4px}
+.rank-viewer__btn:hover{background:rgba(212,175,55,.2);box-shadow:0 0 20px rgba(212,175,55,.4)}
+.rank-viewer__prev{left:40px}
+.rank-viewer__next{right:40px}
+/* 后台登录弹窗 */
+.admin-login{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:5000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
+.admin-login.active{display:flex}
+.admin-login__box{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:40px;border-radius:8px;border:1px solid rgba(212,175,55,.3);box-shadow:0 0 50px rgba(212,175,55,.2);text-align:center;position:relative;width:360px;animation:modalSlideUp .4s ease}
+.admin-login__title{font-family:"Ma Shan Zheng",cursive;font-size:1.8rem;color:#d4af37;margin-bottom:8px;letter-spacing:4px}
+.admin-login__subtitle{font-size:.85rem;color:#a0aec0;margin-bottom:25px;letter-spacing:1px}
+.admin-login__input{width:100%;padding:12px 15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:4px;font-size:.95rem;outline:none;margin-bottom:12px;font-family:inherit;transition:border-color .3s}
+.admin-login__input:focus{border-color:rgba(212,175,55,.6);box-shadow:0 0 10px rgba(212,175,55,.2)}
+.admin-login__btn{width:100%;padding:12px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#1a1a2e;border:none;border-radius:4px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .3s;font-family:inherit;letter-spacing:3px;margin-top:5px}
+.admin-login__btn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(212,175,55,.4)}
+.admin-login__error{color:#ff6b6b;font-size:.85rem;margin-top:10px;min-height:20px}
+.admin-login__close{position:absolute;top:15px;right:15px;background:none;border:none;color:#a0aec0;font-size:1.2rem;cursor:pointer;transition:color .3s}
+.admin-login__close:hover{color:#fff}
+
+/* 成员名片轮播 */
+.member-carousel-wrap{padding:30px 0 10px;background:linear-gradient(180deg,#1A202C 0%,rgba(154,103,211,.08) 100%)}
+.member-carousel{position:relative;max-width:700px;margin:0 auto 20px;border-radius:14px;overflow:hidden;border:1px solid rgba(212,175,55,.35);box-shadow:0 25px 70px rgba(0,0,0,.6),0 0 35px rgba(212,175,55,.1);background:linear-gradient(160deg,rgba(20,22,32,.98),rgba(15,15,22,.98))}
+.member-carousel__stage{position:relative;height:460px}
+.member-carousel__card{height:100%}
+.member-carousel__art{position:relative;height:340px;overflow:hidden;background:#1a1a2e}
+.member-carousel__art img{width:100%;height:100%;object-fit:cover;transition:opacity .4s;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.member-carousel__art-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,15,22,.96) 0%,rgba(15,15,22,.25) 65%,transparent 100%)}
+.member-carousel__name{position:absolute;bottom:50px;left:0;right:0;text-align:center;font-family:"Ma Shan Zheng",cursive;font-size:3rem;color:#fff!important;letter-spacing:8px;text-shadow:0 0 25px rgba(212,175,55,.7),0 2px 8px rgba(0,0,0,.9);z-index:10!important;display:block!important;}
+.member-carousel__subtitle{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:.82rem;color:#cbd5e0;letter-spacing:2px;z-index:2;opacity:.9}
+.member-carousel__footer{display:flex;align-items:center;gap:14px;padding:16px 20px;border-top:1px solid rgba(212,175,55,.2);background:rgba(10,10,16,.6)}
+.member-carousel__avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #d4af37;flex-shrink:0;box-shadow:0 0 14px rgba(212,175,55,.3)}
+.member-carousel__info{flex:1;min-width:0}
+.member-carousel__nickname{font-size:1.05rem;color:#f7fafc;letter-spacing:2px}
+.member-carousel__position{font-size:.78rem;color:#d4af37;letter-spacing:3px;margin-top:2px}
+.member-carousel__btn{padding:8px 18px;background:linear-gradient(135deg,#d4af37,#b8941f);color:#1a1a2e;border:none;border-radius:22px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s;font-family:inherit;letter-spacing:1px;white-space:nowrap}
+.member-carousel__btn:hover{transform:scale(1.06);box-shadow:0 4px 18px rgba(212,175,55,.45)}
+.member-carousel__dots{position:absolute;bottom:78px;left:0;right:0;display:flex;justify-content:center;gap:7px;z-index:3}
+.member-carousel__dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s;border:none}
+.member-carousel__dot.active{background:#d4af37;transform:scale(1.3);box-shadow:0 0 10px rgba(212,175,55,.6)}
+.member-carousel__arrow{position:absolute;top:45%;transform:translateY(-50%);width:40px;height:40px;background:rgba(10,10,15,.6);border:1px solid rgba(212,175,55,.4);color:#d4af37;font-size:1.5rem;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:4;transition:all .3s;backdrop-filter:blur(6px)}
+.member-carousel__arrow:hover{background:rgba(212,175,55,.25)}
+.member-carousel__arrow--prev{left:12px}
+.member-carousel__arrow--next{right:12px}
+.member-carousel__play{position:absolute;top:12px;right:12px;width:34px;height:34px;background:rgba(8,8,12,.55);border:1px solid rgba(212,175,55,.4);color:#d4af37;font-size:.9rem;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:4;transition:all .3s}
+.member-carousel__play:hover{background:rgba(212,175,55,.2)}
+/* 满天星多行横向轮播 */
+.photo-wall-section{padding:60px 0;background:radial-gradient(ellipse at center,#1a1530 0%,#0d0a1a 50%,#050308 100%);overflow:hidden;position:relative}
+.photo-wall-section::before{content:'';position:absolute;inset:0;background-image:radial-gradient(2px 2px at 20% 30%,rgba(255,255,255,.8),transparent),radial-gradient(1px 1px at 60% 70%,rgba(255,255,255,.6),transparent),radial-gradient(1.5px 1.5px at 80% 20%,rgba(212,175,55,.7),transparent),radial-gradient(1px 1px at 40% 80%,rgba(255,255,255,.5),transparent),radial-gradient(2px 2px at 90% 50%,rgba(154,103,211,.6),transparent);background-size:300px 300px;animation:starTwinkle 8s ease-in-out infinite;pointer-events:none;opacity:.5}
+@keyframes starTwinkle{0%,100%{opacity:.3}50%{opacity:.7}}
+.starwall{position:relative;width:100%;display:flex;flex-direction:column;gap:12px;padding:20px 0}
+.starwall__row{position:relative;overflow:hidden;width:100%;padding:8px 0}
+.starwall__track{display:flex;gap:12px;width:max-content;align-items:center;will-change:transform}
+.starwall__row--r1 .starwall__track{animation:scrollL 30s linear infinite}
+.starwall__row--r2 .starwall__track{animation:scrollR 36s linear infinite}
+.starwall__row--r3 .starwall__track{animation:scrollL 42s linear infinite}
+.starwall__track:hover{animation-play-state:paused}
+@keyframes scrollL{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes scrollR{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+.starwall__item{position:relative;flex:0 0 auto;cursor:pointer;border-radius:6px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,.5);background:#0d0f14;transition:transform .4s,box-shadow .4s,filter .4s}
+.starwall__item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s,opacity .4s;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.starwall__item::after{content:'';position:absolute;inset:0;border:1px solid rgba(212,175,55,.4);border-radius:6px;opacity:0;transition:opacity .4s;pointer-events:none;box-shadow:0 0 15px rgba(212,175,55,.3),inset 0 0 10px rgba(212,175,55,.1)}
+.starwall__item:hover{z-index:10;transform:scale(1.15);filter:brightness(1.15);box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 30px rgba(212,175,55,.5);animation:none}
+.starwall__item:hover img{transform:scale(1.08)}
+.starwall__item:hover::after{opacity:1}
+@keyframes starGlow{0%,100%{box-shadow:0 4px 12px rgba(0,0,0,.5),0 0 5px rgba(212,175,55,.1)}50%{box-shadow:0 4px 15px rgba(0,0,0,.5),0 0 15px rgba(212,175,55,.35)}}
+.starwall__item.sz-sm{width:110px;height:80px}
+.starwall__item.sz-md{width:150px;height:105px}
+.starwall__item.sz-lg{width:190px;height:130px}
+.starwall__item.sz-xl{width:230px;height:155px}
+.starwall__item.sz-sq{width:130px;height:130px}
+.starwall__fade{position:absolute;top:0;bottom:0;width:100px;z-index:5;pointer-events:none}
+.starwall__fade--left{left:0;background:linear-gradient(to right,rgba(13,10,26,1),transparent)}
+.starwall__fade--right{right:0;background:linear-gradient(to left,rgba(13,10,26,1),transparent)}
+.starwall-hint{text-align:center;font-size:.8rem;color:rgba(247,250,252,.4);letter-spacing:2px;margin-top:10px}
+@media(max-width:768px){.starwall__item.sz-sm{width:80px;height:60px}.starwall__item.sz-md{width:110px;height:78px}.starwall__item.sz-lg{width:140px;height:95px}.starwall__item.sz-xl{width:170px;height:115px}.starwall__item.sz-sq{width:95px;height:95px}.starwall__track{gap:8px}}
+@media(max-width:480px){.starwall__item.sz-sm{width:65px;height:48px}.starwall__item.sz-md{width:90px;height:63px}.starwall__item.sz-lg{width:115px;height:78px}.starwall__item.sz-xl{width:140px;height:95px}.starwall__item.sz-sq{width:75px;height:75px}}
+
+        /* 关于云归渚卡片 */
+        .about-card-section{padding:80px 0;background:var(--bg-dark,#0a0a12);position:relative}
+        .about-card{max-width:800px;margin:0 auto;padding:50px;background:var(--bg-card,#14141f);border-radius:16px;border:1px solid rgba(212,175,55,.2);box-shadow:0 15px 50px rgba(0,0,0,.4),0 0 30px rgba(212,175,55,.05);transition:all .4s}
+        .about-card:hover{border-color:rgba(212,175,55,.35);box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 40px rgba(212,175,55,.1);transform:translateY(-4px)}
+        .about-card__title{font-family:"Ma Shan Zheng",cursive;font-size:1.8rem;color:#d4af37;text-align:center;margin-bottom:30px;letter-spacing:4px;text-shadow:0 0 20px rgba(212,175,55,.3)}
+        .about-card__text{color:#a0aec0;line-height:2;font-size:.95rem;text-align:justify}
+        .about-card__text p{margin-bottom:16px}
+        .about-card__farewell{text-align:center;color:#d4af37;margin-top:30px;font-family:"Ma Shan Zheng",cursive;font-size:1.2rem;letter-spacing:4px;text-shadow:0 0 15px rgba(212,175,55,.3)}
+
+/* 抖音播放器UI遮罩 */
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@3"></script>
+</head>
+<body>
+<div class="loader" id="loader"><div class="loader__title">云归渚</div><div class="loader__bar"><div class="loader__fill"></div></div></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+<canvas id="particleCanvas"></canvas>
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div id="leafContainer"></div>
+
+<div class="audio-player">
+  <audio id="bgAudio" loop><source src="https://s3plus.meituan.net/opapisdk/op_ticket_885190757_1758424375681_qdqqd_t01hdm.mp3" type="audio/mpeg"></audio>
+  <button class="audio-player__toggle-btn" id="audioBtn">▶</button>
+  <div class="audio-player__info">
+    <div class="audio-player__nowplaying" id="nowPlaying">♫ 燕云十六声 - 登录曲</div>
+    <div class="audio-player__progress-bar" id="progressBar"><div class="audio-player__progress-fill" id="progressFill"></div></div>
+    <div class="audio-player__time"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></div>
+  </div>
+  <div class="audio-player__volume"><span>🔊</span><input type="range" class="audio-player__volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.3"></div>
+  <button class="audio-player__toggle-btn audio-player__playlist-btn" id="playlistBtn">♫</button>
+</div>
+<div class="audio-playlist" id="audioPlaylist">
+  <div class="audio-playlist__item active" data-idx="0"><span class="audio-playlist__item-num">1</span><span>燕云十六声 - 登录曲</span></div>
+  <div class="audio-playlist__item" data-idx="1"><span class="audio-playlist__item-num">2</span><span>燕云十六声 - 不见山</span></div>
+  <div class="audio-playlist__item" data-idx="2"><span class="audio-playlist__item-num">3</span><span>燕云十六声 - 春江花月夜</span></div>
+  <div class="audio-playlist__item" data-idx="3"><span class="audio-playlist__item-num">4</span><span>燕云十六声 - 归舟</span></div>
+  <div class="audio-playlist__item" data-idx="4"><span class="audio-playlist__item-num">5</span><span>燕云十六声 - 河西</span></div>
+  <div class="audio-playlist__item" data-idx="5"><span class="audio-playlist__item-num">6</span><span>燕云十六声 - 江南最忆杭州</span></div>
+  <div class="audio-playlist__item" data-idx="6"><span class="audio-playlist__item-num">7</span><span>燕云十六声 - 杭州城玉山最胜</span></div>
+  <div class="audio-playlist__item" data-idx="7"><span class="audio-playlist__item-num">8</span><span>燕云十六声 - 清宵舞月明</span></div>
+  <div class="audio-playlist__item" data-idx="8"><span class="audio-playlist__item-num">9</span><span>燕云十六声 - 欢鼓奏明春</span></div>
+  <div class="audio-playlist__item" data-idx="9"><span class="audio-playlist__item-num">10</span><span>燕云十六声 - 寥寥长生</span></div>
+  <div class="audio-playlist__item" data-idx="10"><span class="audio-playlist__item-num">11</span><span>燕云十六声 - 镇守无明春山</span></div>
+  <div class="audio-playlist__item" data-idx="11"><span class="audio-playlist__item-num">12</span><span>燕云十六声 - 过春山</span></div>
+  <div class="audio-playlist__item" data-idx="12"><span class="audio-playlist__item-num">13</span><span>燕云十六声 - 风起之时</span></div>
+  <div class="audio-playlist__item" data-idx="13"><span class="audio-playlist__item-num">14</span><span>燕云十六声 - 凉州箫鼓</span></div>
+  <div class="audio-playlist__item" data-idx="14"><span class="audio-playlist__item-num">15</span><span>燕云十六声 - 青山不改</span></div>
+</div>
+
+<nav class="main-nav" id="mainNav">
+  <div class="main-nav__container">
+    <div class="main-nav__brand" onclick="scrollToSection('hero')"><img src="https://www.yysls.cn/pc/gw/20220815175950/img/logo2_97a4294.png" alt="logo"><h2>云归渚</h2></div>
+    <ul class="main-nav__menu" id="navMenu">
+      <li><a class="main-nav__link" onclick="scrollToSection('hero')">首页</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('stats')">纪事</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('rank')">排行</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('video')">混剪</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('activity')">活动</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('members')">人员</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('timeline')">大事记</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('gallery')">相册</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('faq')">FAQ</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('join')">挂名</a></li>
+      <li><button class="main-nav__admin-btn" onclick="openAdmin()">管理</button></li>
+    </ul>
+    <button class="nav-toggle" onclick="toggleNav()">☰</button>
+  </div>
+</nav>
+
+<section class="hero-section" id="hero" style="background-image:url('https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/background/background1.avif')">
+  <div class="hero-section__overlay"></div>
+  <div class="hero-section__content">
+    <img src="https://www.yysls.cn/pc/gw/20220815175950/img/logo3_e2ad630.png" alt="logo" class="hero-section__logo">
+    <h1 class="hero-section__title">云归渚</h1>
+    <p class="hero-section__subtitle">云深不知归处 · 渚清沙白鸟飞回</p>
+    <div class="hero-section__actions">
+      <button class="btn btn--secondary" onclick="scrollToSection('video')">查看百业混剪</button>
+      <button class="btn btn--primary" onclick="scrollToSection('timeline')">江湖大事记</button>
+      <button class="btn btn--secondary" onclick="scrollToSection('members')">看看老朋友们</button>
+    </div>
+  </div>
+  <div class="hero__scroll"><span>向 下 探 索</span><div class="hero__scroll-line"></div></div>
+</section>
+
+<section class="section stats" id="stats">
+  <div class="container">
+    <div class="section-header reveal"><h2 class="section-header__title">江 湖 纪 事</h2><p class="section-header__subtitle">江湖岁月 · 历历在目</p></div>
+    <div class="stats__grid">
+      <div class="stats__card reveal"><div class="stats__icon">⚔️</div><div class="stats__number" data-target="80">0</div><div class="stats__label">曾 在 册 成 员</div></div>
+      <div class="stats__card reveal"><div class="stats__icon">🏆</div><div class="stats__number" data-target="256">0</div><div class="stats__label">曾 完 成 活 动</div></div>
+      <div class="stats__card reveal"><div class="stats__icon">📜</div><div class="stats__number" data-target="128">0</div><div class="stats__label">副 本 记 录</div></div>
+      <div class="stats__card reveal"><div class="stats__icon">⭐</div><div class="stats__number" data-target="9999">0</div><div class="stats__label">江 湖 声 望</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section rank-section" id="rank">
+  <div class="container">
+    <div class="section-header reveal"><h2 class="section-header__title">排 行 榜</h2><p class="section-header__subtitle">战力 · 贡献 · 活跃度</p></div>
+    <div class="rank__tabs reveal">
+      <button class="rank__tab active" onclick="switchRank('power')">战力榜</button>
+      <button class="rank__tab" onclick="switchRank('contribution')">贡献榜</button>
+      <button class="rank__tab" onclick="switchRank('activity')">活跃度榜</button>
+    </div>
+    <div class="rank__list" id="rankList"></div>
+  </div>
+</section>
+
+<div class="section-spacer"><div class="section-header"><h2 class="section-header__title">百 业 混 剪</h2><p class="section-header__subtitle">生而微末者 · 侠为其声</p></div></div>
+<section class="media-section" id="video" style="background-image:url('https://www.yysls.cn/pc/gw/20220815175950/img/mhys/bz/17_33f9186.jpg?image_process=format,jpg')">
+  <div class="media-section__overlay"></div>
+  <div class="video-carousel">
+    <button class="video-carousel__btn" onclick="prevVideo()">‹</button>
+    <div class="video-carousel__frame"><iframe class="video-carousel__iframe" id="videoIframe" src="https://open.douyin.com/player/video?vid=7592272946962369838&autoplay=0" frameborder="0" allowfullscreen></iframe></div>
+    <button class="video-carousel__btn" onclick="nextVideo()">›</button>
+    <div class="video-carousel__indicators" id="videoDots"></div>
+  </div>
+</section>
+
+<div class="section-spacer"><div class="section-header"><h2 class="section-header__title">活 动 回 顾</h2><p class="section-header__subtitle">那些年一起走过的江湖</p></div></div>
+<section class="media-section" id="activity" style="background-image:url('https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/background/background1.avif')">
+  <div class="media-section__overlay"></div>
+  <div class="organization-carousel">
+    <button class="organization-carousel__btn" onclick="prevOrg()">‹</button>
+    <div class="organization-activity-card" id="orgCard">
+      <div class="organization-carousel__image"><img id="orgImg" src="" alt="活动"></div>
+      <div class="organization-carousel__content"><h3 id="orgTitle"></h3><p id="orgDesc"></p><div class="organization-carousel__stats" id="orgStats"></div></div>
+    </div>
+    <button class="organization-carousel__btn" onclick="nextOrg()">›</button>
+  </div>
+</section>
+
+<div class="section-spacer"><div class="section-header"><h2 class="section-header__title">百 业 人 员</h2><p class="section-header__subtitle">点击名字查看详情 · 点击大图切换 · 共86位成员</p></div></div>
+<section id="members" style="position:relative;z-index:1">
+  <div class="member-carousel-wrap">
+    <div class="member-carousel" id="memberCarousel">
+      <div class="member-carousel__stage" id="carouselStage">
+        <div class="member-carousel__card">
+          <div class="member-carousel__art"><img id="carouselArt" src="" alt=""><div class="member-carousel__art-overlay"></div>
+          <div class="member-carousel__name" id="carouselName"></div>
+          <div class="member-carousel__subtitle" id="carouselSubtitle"></div>
+          </div>
+          <div class="member-carousel__footer">
+          <img class="member-carousel__avatar" id="carouselAvatar" src="" alt="">
+          <div class="member-carousel__info"><div class="member-carousel__nickname" id="carouselNickname"></div><div class="member-carousel__position" id="carouselPosition"></div></div>
+          <button class="member-carousel__btn" onclick="showCarouselDetail()">查看详情</button>
+          </div>
+        </div>
+      </div>
+      <button class="member-carousel__play" id="carouselPlayBtn" onclick="toggleCarouselAuto()">⏸</button>
+      <button class="member-carousel__arrow member-carousel__arrow--prev" onclick="carouselPrev()">‹</button>
+      <button class="member-carousel__arrow member-carousel__arrow--next" onclick="carouselNext()">›</button>
+      <div class="member-carousel__dots" id="carouselDots"></div>
+    </div>
+  </div>
+  <div class="character-showcase">
+    <div class="character-showcase__sidebar">
+      <input type="text" class="character-showcase__search" id="charSearch" placeholder="搜索成员..." oninput="filterCharacters()">
+      <div class="character-showcase__filters" id="charFilters"></div>
+      <div class="character-showcase__active" id="charList"></div>
+      <div class="character-showcase__pagination">
+        <button class="character-showcase__page-btn" onclick="prevPage()">‹</button>
+        <div class="character-showcase__page-indicators" id="pageIndicators"></div>
+        <button class="character-showcase__page-btn" onclick="nextPage()">›</button>
+      </div>
+    </div>
+    <div class="character-showcase__main">
+      <div class="character-showcase__artwork"><div class="character-showcase__artwork-container" onclick="nextCharArt()"><img id="charArtImg" src="" alt="角色大图"><div class="character-showcase__artwork-overlay"></div></div></div>
+      <div class="character-showcase__info">
+        <h1 class="character-showcase__name" id="charName" onclick="openCharModal()"></h1>
+        <p class="character-showcase__role" id="charRole"></p>
+        <span class="character-showcase__power" id="charPower"></span>
+        <div class="character-showcase__tags" id="charTags"></div>
+        <p class="character-showcase__description" id="charDesc"></p>
+      </div>
+      <div class="character-showcase__hint">点击名字查看详情 · 点击大图切换</div>
+    </div>
+  </div>
+</section>
+
+<section class="section timeline-section" id="timeline">
+  <div class="container">
+    <div class="section-header reveal"><h2 class="section-header__title">百 业 大 事 记</h2><p class="section-header__subtitle">云归渚的江湖历程</p></div>
+    <div class="timeline reveal">
+      <div class="timeline__item"><div class="timeline__date">开服元年 · 春</div><h3 class="timeline__title">烟岚云岫创立</h3><p class="timeline__desc">社长吞吞于燕云十六声开服之际创立百业，原名"烟岚云岫"，首批成员12人，立下"云深不知归处，渚清沙白鸟飞回"的百业箴言。</p></div>
+      <div class="timeline__item"><div class="timeline__date">开服元年 · 夏</div><h3 class="timeline__title">首次五人本通关</h3><p class="timeline__desc">百业首次组织五人本开荒，历经三日终于通关，成员梦酒殇、小陈发大财、施流岁表现突出，被封为"开荒三杰"。</p></div>
+      <div class="timeline__item"><div class="timeline__date">开服元年 · 秋</div><h3 class="timeline__title">百业成员突破50人</h3><p class="timeline__desc">百业规模持续扩大，成员数突破50人，设立副社长、长老、精英等职位体系，管理日趋完善。</p></div>
+      <div class="timeline__item"><div class="timeline__date">开服元年 · 冬</div><h3 class="timeline__title">众志凌霄首战告捷</h3><p class="timeline__desc">百业专属PVE协作挑战"众志凌霄"开启，全员同心，首周即通关全部关卡，获得服务器首通成就。</p></div>
+      <div class="timeline__item"><div class="timeline__date">某季 · 更名</div><h3 class="timeline__title">更名云归渚</h3><p class="timeline__desc">百业正式更名为"云归渚"，取"云深不知归处，渚清沙白鸟飞回"之意，延续烟岚云岫的江湖情谊。</p></div>
+      <div class="timeline__item"><div class="timeline__date">7月8日</div><h3 class="timeline__title">解散转纯休闲</h3><p class="timeline__desc">云归渚正式解散，转为纯休闲百业。不再组织活动、不再主动招人。此网站转为留念站，记录曾经的江湖岁月，也为退游的朋友留下一处电子痕迹。</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="photo-wall-section" id="gallery">
+  <div class="container">
+    <div class="section-header reveal"><h2 class="section-header__title">百 业 相 册</h2><p class="section-header__subtitle">记录江湖路上的每一个瞬间</p></div>
+  </div>
+  <div class="starwall">
+    <div class="starwall__row starwall__row--r1">
+      <div class="starwall__fade starwall__fade--left"></div>
+      <div class="starwall__fade starwall__fade--right"></div>
+      <div class="starwall__track" id="starwallR1"></div>
+    </div>
+    <div class="starwall__row starwall__row--r2">
+      <div class="starwall__fade starwall__fade--left"></div>
+      <div class="starwall__fade starwall__fade--right"></div>
+      <div class="starwall__track" id="starwallR2"></div>
+    </div>
+    <div class="starwall__row starwall__row--r3">
+      <div class="starwall__fade starwall__fade--left"></div>
+      <div class="starwall__fade starwall__fade--right"></div>
+      <div class="starwall__track" id="starwallR3"></div>
+    </div>
+    <div class="starwall-hint">✦ 悬停暂停 · 点击查看大图 ✦</div>
+  </div>
+</section>
+
+<section class="section faq-section" id="faq">
+  <div class="container">
+    <div class="section-header reveal"><h2 class="section-header__title">常 见 问 题</h2><p class="section-header__subtitle">FAQ · 你问我答</p></div>
+    <div class="faq__list reveal">
+      <div class="faq__item" onclick="toggleFaq(this)"><div class="faq__question">云归渚还在运营吗？<span class="faq__question-icon">+</span></div><div class="faq__answer">云归渚已于7月8日正式解散，转为纯休闲百业。百业本身还在，但不再组织活动、不再主动招人。老成员自愿留下即可，想回来看看随时欢迎。</div></div>
+      <div class="faq__item" onclick="toggleFaq(this)"><div class="faq__question">为什么要做这个留念网站？<span class="faq__question-icon">+</span></div><div class="faq__answer">云归渚原名烟岚云岫，承载了很多人的江湖记忆。做这个网站是为了记录曾经的岁月，也为退游的朋友留下一处可以挂名的电子痕迹，让这段情谊有个安放的地方。</div></div>
+      <div class="faq__item" onclick="toggleFaq(this)"><div class="faq__question">我退游了，可以在这里挂名吗？<span class="faq__question-icon">+</span></div><div class="faq__answer">当然可以！无论你是否还在玩燕云十六声，只要曾是云归渚（烟岚云岫）的一员，或者想在这里留下自己的江湖痕迹，都可以联系社长挂名。无需活跃，无需在线要求。</div></div>
+      <div class="faq__item" onclick="toggleFaq(this)"><div class="faq__question">怎么在官网上挂名/展示自己？<span class="faq__question-icon">+</span></div><div class="faq__answer">联系社长吞吞，提供你的游戏ID、角色截图、个人介绍和标签，社长会帮你更新到官网上。也可以通过页面底部的"留下痕迹"表单提交信息。</div></div>
+      <div class="faq__item" onclick="toggleFaq(this)"><div class="faq__question">现在还能加入云归渚吗？<span class="faq__question-icon">+</span></div><div class="faq__answer">云归渚已转为纯休闲百业，不再主动招人。如果你是老成员想回来，随时欢迎；如果是新朋友，建议寻找其他活跃百业。本站仅作留念和挂名之用。</div></div>
+      <div class="faq__item" onclick="toggleFaq(this)"><div class="faq__question">百业以前叫什么名字？<span class="faq__question-icon">+</span></div><div class="faq__answer">云归渚原名"烟岚云岫"，后更名为"云归渚"，取自百业箴言"云深不知归处，渚清沙白鸟飞回"。两个名字承载的是同一群人的江湖情谊。</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="about-card-section" id="about">
+  <div class="container">
+    <div class="section-header reveal"><h2 class="section-header__title">关 于 云 归 渚</h2><p class="section-header__subtitle">烟岚云岫 · 云归渚 · 留念</p></div>
+    <div class="about-card reveal">
+      <h2 class="about-card__title">关于云归渚</h2>
+      <div class="about-card__text">
+        <p>云归渚，原名烟岚云岫，后改名云归渚。于七月八日正式解散，转为纯休闲百业。此站仅为留念，记录我们曾在燕云十六声的江湖岁月。</p>
+        <p>云深不知归处，渚清沙白鸟飞回。江湖路远，同去同归。我们因燕云十六声相聚，因热爱而同行。</p>
+        <p>若有玩家退游，想找个地方留下电子痕迹，可在此网站挂名。百业其余正常，只是不组织、不主动招人。</p>
+      </div>
+      <p class="about-card__farewell">愿诸位，江湖再见，后会有期。</p>
+    </div>
+  </div>
+</section>
+
+<section class="section join" id="join">
+  <div class="container">
+    <div class="section-header reveal"><h2 class="section-header__title">留 下 痕 迹</h2><p class="section-header__subtitle">云归渚 · 留念站</p></div>
+    <div class="join__content reveal">
+      <p class="join__text">云归渚已于7月8日解散，转为纯休闲百业。此站仅为留念，记录曾经的江湖岁月。<br>若你已退游，或曾是烟岚云岫/云归渚的一员，想在这里留下一处电子痕迹，欢迎挂名。<br>无需活跃，无需在线，想回来看看时，这里永远都在。<br><br>云深不知归处，渚清沙白鸟飞回。</p>
+      <div class="join__form">
+        <div class="join__form-group"><label class="join__form-label">游戏ID</label><input type="text" class="join__form-input" placeholder="你的游戏ID或曾用名"></div>
+        <div class="join__form-group"><label class="join__form-label">身份标签</label><input type="text" class="join__form-input" placeholder="如：老成员/退游留念/截图党/唱歌的/生活玩家"></div>
+        <div class="join__form-group"><label class="join__form-label">想留下的话</label><textarea class="join__form-textarea" placeholder="想说的话、江湖回忆、或只是一个名字..."></textarea></div>
+      </div>
+      <button class="join__btn" onclick="submitJoin()">留 下 痕 迹</button>
+      <div class="message-wall"><div class="message-wall__title">江 湖 留 言 板</div><div class="message-wall__scroll" id="messageWallScroll"><div class="message-wall__list" id="messageWallList"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand"><h3>云 归 渚</h3><p>原名烟岚云岫 · 留念站<br>7月8日解散转纯休闲百业<br>云深不知归处，渚清沙白鸟飞回</p></div>
+      <div class="footer__col"><h4>快 速 导 航</h4><a onclick="scrollToSection('hero')">首页</a><a onclick="scrollToSection('stats')">江湖纪事</a><a onclick="scrollToSection('rank')">排行榜</a><a onclick="scrollToSection('video')">百业混剪</a><a onclick="scrollToSection('members')">百业人员</a><a onclick="scrollToSection('gallery')">百业相册</a></div>
+      <div class="footer__col"><h4>联 系 我 们</h4><p>抖音：云归渚</p><p>社长：吞吞</p><p>副社长：梦酒殇</p><p>挂名留念请联系社长</p></div>
+      <div class="footer__col"><h4>关 注 我 们</h4><div class="footer__social"><div class="footer__social-icon" title="抖音" onclick="alert('抖音：搜索「云归渚」或扫描主页二维码')">♪</div><div class="footer__social-icon" title="QQ群" onclick="alert('QQ群：云归渚百业交流群（群号可在后台配置）')">Q</div><div class="footer__social-icon" title="微信" onclick="alert('微信：添加社长微信（吞吞），备注云归渚')">微</div><div class="footer__social-icon" title="B站" onclick="alert('B站：搜索「云归渚百业」观看精彩视频')">B</div></div></div>
+    </div>
+    <div class="footer__bottom">© 云归渚 · 原名烟岚云岫 · 留念站 · 江湖路远，后会有期</div>
+  </div>
+</footer>
+
+<div class="modal" id="charModal">
+  <div class="modal__content">
+    <button class="modal__close" onclick="closeCharModal()">✕</button>
+    <div class="modal__hero"><div class="modal__avatar"><img id="modalAvatar" src="" alt=""></div><div class="modal__info"><h3 class="modal__name" id="modalName"></h3><p class="modal__role" id="modalRole"></p><span class="modal__power" id="modalPower"></span><div class="modal__tags" id="modalTags"></div><p class="modal__desc" id="modalDesc"></p></div></div>
+    <div class="modal__gallery" id="modalGallery"></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox"><button class="lightbox__close" onclick="closeLightbox()">✕</button><button class="lightbox__nav lightbox__prev" onclick="prevLightbox()">‹</button><img id="lightboxImg" src="" alt=""><button class="lightbox__nav lightbox__next" onclick="nextLightbox()">›</button><div class="lightbox__counter" id="lightboxCounter"></div></div>
+
+<div class="rank-viewer" id="rankViewer">
+  <button class="rank-viewer__close" onclick="closeRankViewer()">✕</button>
+  <button class="rank-viewer__btn rank-viewer__prev" onclick="prevRankViewer()">‹</button>
+  <div class="rank-viewer__content">
+    <img class="rank-viewer__img" id="rankViewerImg" src="" alt="">
+    <div class="rank-viewer__name" id="rankViewerName"></div>
+    <div class="rank-viewer__role" id="rankViewerRole"></div>
+  </div>
+  <button class="rank-viewer__btn rank-viewer__next" onclick="nextRankViewer()">›</button>
+</div>
+
+<div class="admin-login" id="adminLogin">
+  <div class="admin-login__box">
+    <div class="admin-login__title">管 理 员 登 录</div>
+    <div class="admin-login__subtitle">仅社长可访问后台管理</div>
+    <input type="text" class="admin-login__input" id="loginUser" placeholder="账号" onkeydown="if(event.key==='Enter')doLogin()">
+    <input type="password" class="admin-login__input" id="loginPass" placeholder="密码" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="admin-login__btn" onclick="doLogin()">登 录</button>
+    <div class="admin-login__error" id="loginError"></div>
+    <button class="admin-login__close" onclick="closeLogin()">✕</button>
+  </div>
+</div>
+
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-panel__header"><div class="admin-panel__title">后 台 管 理</div><button class="admin-panel__close" onclick="closeAdmin()">✕</button></div>
+  <div class="admin-panel__body">
+    <div class="admin-tabs"><div class="admin-tab active" onclick="switchAdminTab(this,'tab-basic')">基本设置</div><div class="admin-tab" onclick="switchAdminTab(this,'tab-members')">成员管理</div><div class="admin-tab" onclick="switchAdminTab(this,'tab-content')">内容管理</div></div>
+    <div class="admin-tab-content active" id="tab-basic">
+      <div class="admin-panel__section"><div class="admin-panel__section-title">百业基本信息</div><input type="text" class="admin-panel__input" id="adminName" placeholder="百业名称" value="云归渚"><input type="text" class="admin-panel__input" id="adminSlogan" placeholder="百业标语" value="云深不知归处，渚清沙白鸟飞回"><textarea class="admin-panel__textarea" id="adminDesc" placeholder="百业简介">原名烟岚云岫，后更名云归渚。7月8日正式解散转纯休闲百业，此站仅为留念，记录江湖岁月，也为退游朋友留下电子痕迹。</textarea><button class="admin-panel__btn" onclick="saveSiteInfo()">保存基本信息</button></div>
+      <div class="admin-panel__section"><div class="admin-panel__section-title">网站外观设置</div><label class="admin-panel__label">主题色</label><input type="color" class="admin-panel__color" id="adminThemeColor" value="#d4af37"><label class="admin-panel__label">Hero背景图URL</label><input type="text" class="admin-panel__input" id="adminHeroBg" placeholder="Hero背景图URL"><label class="admin-panel__label">加载页背景图URL</label><input type="text" class="admin-panel__input" id="adminLoaderBg" placeholder="加载页背景图URL"><button class="admin-panel__btn" onclick="saveAppearance()">保存外观设置</button></div>
+      <div class="admin-panel__section"><div class="admin-panel__section-title">光效开关</div><label class="admin-panel__checkbox"><input type="checkbox" id="toggleParticles" checked> 粒子背景</label><label class="admin-panel__checkbox"><input type="checkbox" id="toggleLeaves" checked> 枫叶飘落</label><label class="admin-panel__checkbox"><input type="checkbox" id="toggleCursorGlow" checked> 鼠标光晕</label><label class="admin-panel__checkbox"><input type="checkbox" id="toggleTitleGlow" checked> 标题发光</label><button class="admin-panel__btn" onclick="saveEffects()">保存光效设置</button></div>
+    </div>
+    <div class="admin-tab-content" id="tab-members">
+      <div class="admin-panel__section"><div class="admin-panel__section-title">添加新成员</div><input type="text" class="admin-panel__input" id="newName" placeholder="成员名称"><input type="text" class="admin-panel__input" id="newRole" placeholder="职位"><input type="text" class="admin-panel__input" id="newAvatar" placeholder="头像图片URL"><textarea class="admin-panel__textarea" id="newDesc" placeholder="成员描述"></textarea><button class="admin-panel__btn" onclick="addMember()">添加成员</button></div>
+      <div class="admin-panel__section"><div class="admin-panel__section-title">成员列表（点击✕删除）</div><div id="adminMemberList"></div></div>
+    </div>
+    <div class="admin-tab-content" id="tab-content">
+      <div class="admin-panel__section"><div class="admin-panel__section-title">视频管理</div><div id="adminVideoList"></div><button class="admin-panel__btn admin-panel__btn--secondary" onclick="addVideoInput()">+ 添加视频</button></div>
+      <div class="admin-panel__section"><div class="admin-panel__section-title">音乐管理</div><div id="adminSongList"></div><button class="admin-panel__btn admin-panel__btn--secondary" onclick="addSongInput()">+ 添加歌曲</button></div>
+      <div class="admin-panel__section"><div class="admin-panel__section-title">相册管理</div><div id="adminGalleryList"></div><button class="admin-panel__btn admin-panel__btn--secondary" onclick="addGalleryInput()">+ 添加图片</button></div>
+      <div class="admin-panel__section"><div class="admin-panel__section-title">留言管理（挂名申请）</div><div id="adminMessageList"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="member-edit-modal" id="memberEditModal">
+  <div class="member-edit-modal__box">
+    <div class="member-edit-modal__title">编辑成员</div>
+    <input type="hidden" id="editMemberId">
+    <div class="member-edit-modal__grid">
+      <div><label class="admin-panel__label">成员名称</label><input type="text" class="admin-panel__input" id="editName"></div>
+      <div><label class="admin-panel__label">职位</label><input type="text" class="admin-panel__input" id="editRole"></div>
+      <div><label class="admin-panel__label">战力</label><input type="number" class="admin-panel__input" id="editPower"></div>
+      <div><label class="admin-panel__label">贡献度</label><input type="number" class="admin-panel__input" id="editContribution"></div>
+      <div><label class="admin-panel__label">活跃度</label><input type="number" class="admin-panel__input" id="editActivity"></div>
+      <div><label class="admin-panel__label">头像URL</label><input type="text" class="admin-panel__input" id="editAvatar"></div>
+    </div>
+    <label class="admin-panel__label">标签（逗号分隔）</label><input type="text" class="admin-panel__input" id="editTags">
+    <label class="admin-panel__label">个人描述</label><textarea class="admin-panel__textarea" id="editDesc"></textarea>
+    <div class="member-edit-modal__actions">
+      <button class="admin-panel__btn" onclick="saveMemberEdit()">保存</button>
+      <button class="admin-panel__btn admin-panel__btn--secondary" onclick="closeMemberEdit()">取消</button>
+    </div>
+  </div>
+</div>
+
+<button class="back-top" id="backTop" onclick="scrollToSection('hero')">↑</button>
+
+<script>
+const STORAGE_KEY='yunguizhu_v7_data';
+// ===== Supabase 云端同步 =====
+const SUPABASE_URL='https://lmxtrcsubdkozyrdjclu.supabase.co';
+const SUPABASE_KEY='sb_publishable_tYsxjry1fAnN8rZ4FUqdRQ_3IRrn9l9';
+let supabase=null;
+try{supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);}catch(e){console.warn('Supabase init failed',e);}
+let cloudMessages=[];
+async function loadMessagesFromCloud(){
+  if(!supabase)return;
+  try{
+    const {data,error}=await supabase.from('messages').select('*').order('created_at',{ascending:true});
+    if(error){console.warn('fetch messages error',error);return;}
+    cloudMessages=data||[];
+    const likedIds=JSON.parse(localStorage.getItem('yunguizhu_liked')||'[]');
+    cloudMessages.forEach(m=>{m.liked=likedIds.includes(m.id);});
+    renderMessages();
+  }catch(e){console.warn('loadMessagesFromCloud error',e);}
+}
+
+let siteInfo={name:'云归渚',slogan:'云深不知归处，渚清沙白鸟飞回',desc:'原名烟岚云岫，后更名云归渚。7月8日正式解散转纯休闲百业，此站仅为留念。'};
+let characters=[];
+const defaultCharacters=[];
+const surnames=['云','归','渚','江','湖','梦','醉','听','雪','落','花','满','楼','风','月','星','辰','青','山','远','孤','鸿','影','双','燕','飞','渡','寒','舟','渔','火','愁','眠','古','道','西','风','瘦','马','断','桥','流','水','人','家','夕','阳','西','下','断','肠','人','在','天','涯','桃','花','源','里','笑','春','风','红','豆','生','南','国','春','来','发','几','枝','愿','君','多','采','撷','此','物','最','相','思'];
+const roles=['社长','副社长','长老','长老','长老','精英','精英','精英','精英','精英','精英','精英','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员','普通成员'];
+const tagPool=['开服玩家','江湖传说','战力担当','颜值担当','演唱担当','奶妈大王','双刀大王','唐刀大王','飞天伞','玉玉大王','小老婆','保卫科','招生办','截图达人','美食家','生活玩家','咸鱼!!!','暴揍老大','后宫佳丽三千','阎王大点名','血条包稳','新星奶妈','博弈大王','喜欢调教','黄金腱鞘','三姓家奴','打本特工队','赏金猎人','偷偷输出','偷偷观察','心碎了很多瓣','只取一瓢','桀桀桀','本体','分魂','诚实','直言不讳','霁月光风','单挑田英','尘尘小王','小昭','电话骚扰','小江','小玉','小老公','紫云楼主','白衣剑客','黑衣刺客','红衣舞姬','青衣书生','黄衣刀客','绿衣游侠','紫衣仙子','橙衣枪客','蓝衣琴师','棕衣铁匠','灰衣渔夫','粉衣花匠','橙衣药师','黑衣蛊师','白衣圣手','红衣战神','紫衣魔尊','青衣剑仙','黄衣财神','绿衣毒仙','蓝衣水神','棕衣山神','灰衣风伯','粉衣花神','橙衣雷神','黑衣夜枭','白衣飞鹰','红衣火凤','紫衣冰凰','青龙','白虎','朱雀','玄武','麒麟','凤凰','蛟龙','貔貅','饕餮','穷奇','混沌','梼杌'];
+const descPool=[
+'刀光剑影中走过，看淡江湖恩怨。一柄长剑随身，行侠仗义不问归途。性格沉稳内敛，是团队中最可靠的后盾。',
+'出身武林世家，自幼习武，枪法出神入化。为人豪爽仗义，朋友有难必挺身而出，是百业中的急先锋。',
+'江湖人称"小诸葛"，足智多谋，擅长排兵布阵。看似文弱书生，实则胸有丘壑，每次行动都由其策划。',
+'医术高超，妙手回春，江湖人称"赛华佗"。不仅能治外伤，更擅长解毒。性格温和，是团队中的治愈者。',
+'轻功卓绝，来去如风，擅长探查情报和追踪。性格机敏，话不多但每句都切中要害，是百业的耳目。',
+'力大无穷，擅使双锤，战场上所向披靡。性格直率憨厚，对朋友忠心耿耿，是团队中最坚实的盾牌。',
+'暗器高手，出手必中，江湖上少有能躲过其暗器之人。性格冷峻，独来独往，但对百业兄弟情深义重。',
+'琴棋书画样样精通，看似风流才子，实则武功深藏不露。擅长以音波伤人，一曲《十面埋伏》可退千军。',
+'酿酒高手，所酿之酒江湖闻名。性格豁达，嗜酒如命，但酒醉后武功反而更盛，人称"醉仙"。',
+'易容术出神入化，能模仿任何人的声音和容貌。是百业的情报专家，多次深入虎穴完成危险任务。',
+'驯兽大师，能与各种猛兽沟通。身边常伴一只巨鹰，侦查敌情无往不利。性格孤僻但对动物极有耐心。',
+'剑法飘逸灵动，如行云流水，人称"剑仙"。出身名门正派，后因看不惯江湖虚伪加入百业，追求真正的侠义。',
+'掌法刚猛，一掌拍出有开山裂石之力。性格火爆，嫉恶如仇，见到不平事必出手，是百业中的执法者。',
+'水性极佳，能在水底潜伏三天三夜。擅长水战和水下暗杀，是百业在江南水乡的重要战力。',
+'机关术大师，擅长制作各种机关陷阱和暗器。性格古怪，痴迷于机关研究，但关键时刻总能拿出奇招制胜。',
+'毒术精湛，用毒出神入化，同时也是解毒高手。亦正亦邪，行事全凭心意，但对百业兄弟绝对忠诚。',
+'刀法霸道，一刀斩出有雷霆万钧之势。性格刚烈，宁折不弯，是百业中最有骨气的汉子。',
+'出身镖师世家，擅长护卫和押运。性格谨慎，心思缜密，每次出行都由其负责安全，从未出过差错。',
+'盗术高明，来去无踪，人称"无影手"。专盗贪官污吏，劫富济贫，是百业中的 Robin Hood。',
+'口才极佳，能言善辩，三寸不烂之舌可退百万兵。负责百业的外交和谈判，多次化解危机于无形。',
+'箭术无双，百步穿杨，百发百中。擅长远程狙击和信号传递，是百业中不可或缺的远程战力。',
+'性格开朗乐观，是团队中的开心果。虽然武功不是最高，但每次都能在危急时刻鼓舞士气，是百业的精神支柱。',
+'内功深厚，修炼的是失传已久的《九阳神功》。性格沉稳，不轻易出手，但一出手必是惊天动地。',
+'女中豪杰，巾帼不让须眉。擅使长鞭，鞭法灵动刁钻。性格泼辣，敢爱敢恨，是百业中唯一的女队长。',
+'隐士高人，曾是武林盟主，后因厌倦江湖纷争归隐。被百业诚意打动出山，是团队中的定海神针。',
+'年轻有为，是百业中最年轻的成员。天赋异禀，武功进步神速，性格谦逊好学，是百业的未来希望。',
+'身经百战，从死人堆里爬出来的老兵。战斗经验丰富，擅长在绝境中寻找生机，是百业的实战教官。',
+'美食家，厨艺高超，江湖人称"厨神"。负责百业的饮食，据说吃了他做的饭能提升功力，是团队的后勤保障。',
+'风水大师，懂天文地理，擅长寻龙点穴。负责百业的据点选址和阵法布置，所到之处必是风水宝地。',
+'性格温柔善良，是百业中的"小太阳"。虽然武功平平，但擅长照顾人，每个成员都受过她的恩惠，是团队的粘合剂。'
+];
+const avatarBase='https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/player/avatar/avatar';
+const customAvatars=[
+'https://aka.doubaocdn.com/s/oCks8xdSac','https://aka.doubaocdn.com/s/W1rdUqw3FW','https://aka.doubaocdn.com/s/QUcjUCcBgg','https://aka.doubaocdn.com/s/QMqHUFzsfK','https://aka.doubaocdn.com/s/tWPFY9VVHH','https://aka.doubaocdn.com/s/ZHEYnJ64DC','https://aka.doubaocdn.com/s/q1pOsukKTg','https://aka.doubaocdn.com/s/vfDSJUTuHQ',
+'https://aka.doubaocdn.com/s/rz57dCLiNC','https://aka.doubaocdn.com/s/PdnC5aak6T','https://aka.doubaocdn.com/s/0FlvUl9eru','https://aka.doubaocdn.com/s/eZtdqlveDo','https://aka.doubaocdn.com/s/qDZfJpZBmb','https://aka.doubaocdn.com/s/sb7qaiuIpQ','https://aka.doubaocdn.com/s/q0wO2BRejV','https://aka.doubaocdn.com/s/SwjUlL5Bz3',
+'https://aka.doubaocdn.com/s/9YztvoB9dd','https://aka.doubaocdn.com/s/PhGeWE5kTB','https://aka.doubaocdn.com/s/b7bPuHBM3U','https://aka.doubaocdn.com/s/NeYg5Zooxl','https://aka.doubaocdn.com/s/7hAOnwI8Ot','https://aka.doubaocdn.com/s/eJupcUvyM8','https://aka.doubaocdn.com/s/TTnv3FFYjJ','https://aka.doubaocdn.com/s/2VFKo84TFP',
+'https://aka.doubaocdn.com/s/TG7lRVdAwD','https://aka.doubaocdn.com/s/zem8cvMbnM','https://aka.doubaocdn.com/s/yMxEDuKpk7','https://aka.doubaocdn.com/s/qhewHi8x69','https://aka.doubaocdn.com/s/zSAX2AJ5XS','https://aka.doubaocdn.com/s/ygnvN7EVJs','https://aka.doubaocdn.com/s/jJDwOLyUpL','https://aka.doubaocdn.com/s/LkW4xpapug',
+'https://aka.doubaocdn.com/s/9lAMbCMgq6','https://aka.doubaocdn.com/s/RgFYByXnMn','https://aka.doubaocdn.com/s/2n1iryVegq','https://aka.doubaocdn.com/s/vlUQlBI3D1','https://aka.doubaocdn.com/s/SoctrnBl3Q','https://aka.doubaocdn.com/s/QoZMEdFqdl','https://aka.doubaocdn.com/s/w34Us76xDc','https://aka.doubaocdn.com/s/8ZJuDFobBY',
+'https://aka.doubaocdn.com/s/Illrijt6tJ','https://aka.doubaocdn.com/s/Sg8nQytOWo','https://aka.doubaocdn.com/s/jvofzRFYeh','https://aka.doubaocdn.com/s/OuQBLwgxVO','https://aka.doubaocdn.com/s/giZoDc2OPL','https://aka.doubaocdn.com/s/q81o2F9mdz','https://aka.doubaocdn.com/s/5rlHckJAbS','https://aka.doubaocdn.com/s/INpRfdItFM',
+'https://aka.doubaocdn.com/s/lBvzQFu6MW','https://aka.doubaocdn.com/s/iQnmW6D6YI','https://aka.doubaocdn.com/s/fQXrvvQtYF','https://aka.doubaocdn.com/s/jbic2RorLi','https://aka.doubaocdn.com/s/g84vIH5PL4','https://aka.doubaocdn.com/s/OaLK2NavR4','https://aka.doubaocdn.com/s/4cUUX1udQF','https://aka.doubaocdn.com/s/GGmLVqirQu',
+'https://aka.doubaocdn.com/s/iI0cc5R9xN','https://aka.doubaocdn.com/s/sRVc2J05mP','https://aka.doubaocdn.com/s/QO6zNpuNYV','https://aka.doubaocdn.com/s/5j2JHwxhA6','https://aka.doubaocdn.com/s/34VzyDrcBd','https://aka.doubaocdn.com/s/XJtd3ByLwZ','https://aka.doubaocdn.com/s/K0Xd2CDBi1','https://aka.doubaocdn.com/s/z2wCW49dvr',
+'https://aka.doubaocdn.com/s/U4piBjWmQV','https://aka.doubaocdn.com/s/4XnpaLKOzl','https://aka.doubaocdn.com/s/w9iz2PVVCC','https://aka.doubaocdn.com/s/llULRRUlJH','https://aka.doubaocdn.com/s/LJLZdpWfUi','https://aka.doubaocdn.com/s/w8QM2Fhm3j','https://aka.doubaocdn.com/s/IxlxdbRdOs','https://aka.doubaocdn.com/s/OJyWwQDlW1',
+'https://aka.doubaocdn.com/s/aBrYqRAaC3','https://aka.doubaocdn.com/s/S8iE2VaXpn','https://aka.doubaocdn.com/s/DOoDvqb42T','https://aka.doubaocdn.com/s/baJORFQ7Vb','https://aka.doubaocdn.com/s/e4pYjkHaY4','https://aka.doubaocdn.com/s/9DspZqBHQi','https://aka.doubaocdn.com/s/Bom1GY9ZsL','https://aka.doubaocdn.com/s/FX82ZGDBPJ',
+'https://aka.doubaocdn.com/s/jxj8aZtVUK','https://aka.doubaocdn.com/s/dqV1m6zo68','https://aka.doubaocdn.com/s/vWqu8WyjP4','https://aka.doubaocdn.com/s/S1VZMJaT4X','https://aka.doubaocdn.com/s/2Q3d24sGdZ','https://aka.doubaocdn.com/s/xKDPcQmi2Y'
+];
+const artBase='https://s3plus.meituan.net/opapisdk/op_ticket_885190757_';
+const artIds=['1757398092558_qdqqd_fqwyyr','1757398094217_qdqqd_yumaub','1757398127831_qdqqd_guf314','1757396364743_qdqqd_s6v7d2','1757396370719_qdqqd_6gwcpi','1757396882965_qdqqd_o4dnit','1757396887602_qdqqd_i3fw7h','1757396980580_qdqqd_sbec34','1757397004514_qdqqd_q8jlps','1757397006815_qdqqd_kxeqns','1757397185939_qdqqd_p3jwtg','1757397227211_qdqqd_4naopb','1757397350020_qdqqd_znw12b','1757398247352_qdqqd_fp884x','1757397634377_qdqqd_5aahta','1757397754462_qdqqd_02liwl','1757397842303_qdqqd_decdsj','1757397988662_qdqqd_p6vxpa','1757398032293_qdqqd_50932h','1757399061068_qdqqd_mdv3tq'];
+
+function seedRandom(seed){let x=Math.sin(seed)*10000;return x-Math.floor(x);}
+function generateCharacters(){
+  const memberList=[
+    {name:'咛咪',role:'社众',act:68240},{name:'屿棠雁',role:'社众',act:76875},{name:'雲栖雾绕',role:'社众',act:9581},{name:'记忆的倒影',role:'社众',act:11300},{name:'骏暄',role:'社众',act:93671},{name:'尉迟问涛',role:'社众',act:2190},
+    {name:'超能小疯子',role:'社众',act:45557},{name:'言润流',role:'社众',act:58350},{name:'陈纵山',role:'社众',act:21188},{name:'青君侧',role:'社众',act:102615},{name:'钟思桥',role:'社众',act:53615},{name:'祝松岚',role:'社众',act:640},
+    {name:'一一玄骨一一',role:'学徒',act:6276},{name:'战神王爷丶',role:'学徒',act:2818},
+    {name:'柊忖危',role:'破妄真君',act:119144},{name:'江厌祠',role:'社众',act:69389},{name:'单身不好吗',role:'社众',act:1865},{name:'倾云萧',role:'社众',act:16145},{name:'林黎落',role:'社众',act:44520},{name:'浅眠了',role:'社众',act:85701},
+    {name:'寒颂尔',role:'社众',act:52445},{name:'贺祁砚',role:'社众',act:335},{name:'陆遲恩',role:'社众',act:29255},{name:'灯钰枫',role:'社众',act:56178},{name:'槿栾',role:'社众',act:46820},{name:'钟离恩培',role:'社众',act:1040},
+    {name:'齐静安白',role:'社众',act:4870},{name:'赫意姝',role:'社众',act:11365},{name:'易随風',role:'社众',act:51386},{name:'云铮衍',role:'社众',act:27155},{name:'祿欤',role:'社众',act:33485},{name:'醉青秋',role:'社众',act:61050},
+    {name:'湖北林宥嘉',role:'社众',act:46530},{name:'许岁笙',role:'社众',act:9660},{name:'君绮剑',role:'社众',act:54968},{name:'万物有阙',role:'社众',act:2260},{name:'国一枪术师',role:'社众',act:10080},{name:'偏古风的名字',role:'社众',act:106030},
+    {name:'霜霄宛',role:'学徒',act:13279},{name:'曉晴脆',role:'学徒',act:17463},{name:'网恋被骗六六',role:'学徒',act:25684},{name:'王伍六',role:'学徒',act:51225},{name:'白绪行',role:'学徒',act:30268},{name:'葉雲兒',role:'学徒',act:43238},
+    {name:'十月紫罹',role:'剑仙',act:91717},{name:'渔歌入晚风',role:'剑仙',act:194933},{name:'萧祈安啊',role:'暗香盈袖',act:115817},{name:'江枫思渺叶',role:'暗香盈袖',act:163810},{name:'陈尔东',role:'大爱仙尊',act:138748},{name:'江未可',role:'破妄真君',act:79209},
+    {name:'桃泽奈奈',role:'社主',act:9075},{name:'鹤又眠',role:'副社主',act:32065},{name:'墨魉',role:'雪域之主',act:98514},{name:'雪域笙',role:'雪域之主',act:133823},{name:'丨吞吞丨',role:'神光离合',act:283619},{name:'取名字好麻烦',role:'神光离合',act:251985},
+    {name:'酸辣粉加醋',role:'社众',act:38958},{name:'池梦竹',role:'社众',act:3205},{name:'玄永棠',role:'社众',act:3400},{name:'来嫣楚',role:'社众',act:46215},{name:'桓适光',role:'社众',act:6889},{name:'爱玩率土',role:'社众',act:3172},
+    {name:'亓官月兮',role:'社众',act:60902},{name:'江鴒箜',role:'社众',act:45373},{name:'舒翦',role:'社众',act:33830},{name:'仙子游凡间',role:'社众',act:2434},{name:'生如浮游',role:'社众',act:59375},{name:'漫步行舟',role:'社众',act:75125},
+    {name:'琪亚娜大圣',role:'社众',act:40539},{name:'斜月洒梨花',role:'社众',act:4345},{name:'凛京',role:'社众',act:42102},{name:'知妜',role:'社众',act:96959},{name:'风难默',role:'社众',act:91114},{name:'养朵小云',role:'社众',act:880},
+    {name:'李長歌丨',role:'社众',act:46959},{name:'赵栖渊',role:'社众',act:10728},{name:'枫辻六',role:'社众',act:80},{name:'羽落花溪',role:'社众',act:40},{name:'紅沙',role:'社众',act:1065},{name:'陈叙殷',role:'社众',act:86698}
+  ];
+  memberList.sort(function(a,b){return b.act-a.act;});
+  for(let i=0;i<memberList.length;i++){
+    const m=memberList[i];
+    const numTags=2+Math.floor(seedRandom(i*3)*3);
+    const tags=[];
+    for(let t=0;t<numTags;t++){tags.push(tagPool[Math.floor(seedRandom(i*100+t*7)*tagPool.length)]);}
+    const desc=descPool[Math.floor(seedRandom(i*5)*descPool.length)];
+    const avatar=customAvatars[i%customAvatars.length];
+    const artCount=1+Math.floor(seedRandom(i*11)*3);
+    const art=[];
+    for(let a=0;a<artCount;a++){art.push(artBase+artIds[(i+a)%artIds.length]+'.avif');}
+    const power=5000+Math.floor(seedRandom(i*23)*15000);
+    const contribution=100+Math.floor(seedRandom(i*29)*5000);
+    const activity=m.act;
+    defaultCharacters.push({id:i+1,name:m.name,role:m.role,tags:tags,desc:desc,avatar:avatar,art:art,power:power,contribution:contribution,activity:activity});
+  }
+}
+generateCharacters();
+
+const activities=[
+  {name:'互帮互助五人本',desc:'百业成员互帮互助，齐心协力，共同拿下五人本！',host:'任何百业成员',time:'每周一、三、五 20:00',location:'百业频道',image:'https://www.yysls.cn/pc/gw/20220815175950/img/mhys/bz/17_33f9186.jpg?image_process=format,jpg'},
+  {name:'互帮互助十人本',desc:'百业成员互帮互助，齐心协力，共同拿下双十人本！',host:'长老团',time:'每周六 20:00',location:'百业频道',image:'https://www.yysls.cn/pc/gw/20220815175950/img/mhys/bz/18_bd1a5dc.jpg?image_process=format,jpg'},
+  {name:'众志凌霄开荒',desc:'百业专属PVE协作挑战，全员同心共攀高峰！',host:'社长吞吞',time:'每周日 19:30',location:'众志凌霄入口',image:'https://www.yysls.cn/pc/gw/20220815175950/img/mhys/bz/17_33f9186.jpg?image_process=format,jpg'},
+  {name:'云归渚团建',desc:'百业成员齐聚一堂，共话江湖，增进情谊！',host:'副社长梦酒殇',time:'每月最后一个周末',location:'百业驻地',image:'https://www.yysls.cn/pc/gw/20220815175950/img/mhys/bz/18_bd1a5dc.jpg?image_process=format,jpg'},
+  {name:'新手带本活动',desc:'长老免费带新手刷装备、过剧情，欢迎新人参加！',host:'长老团',time:'每周二、四 21:00',location:'新手频道',image:'https://www.yysls.cn/pc/gw/20220815175950/img/mhys/bz/17_33f9186.jpg?image_process=format,jpg'}
+];
+
+const videos=[
+'https://open.douyin.com/player/video?vid=7592272946962369838&autoplay=0',
+'https://open.douyin.com/player/video?vid=7481662231315303707&autoplay=0',
+'https://open.douyin.com/player/video?vid=7542864599440887097&autoplay=0'
+];
+
+const galleryImages=[
+  {url:artBase+'1757398092558_qdqqd_fqwyyr.avif',title:'江湖掠影一',wide:true},
+  {url:artBase+'1757396364743_qdqqd_s6v7d2.avif',title:'江湖掠影二'},
+  {url:artBase+'1757396882965_qdqqd_o4dnit.avif',title:'江湖掠影三'},
+  {url:artBase+'1757397004514_qdqqd_q8jlps.avif',title:'江湖掠影四',tall:true},
+  {url:artBase+'1757397185939_qdqqd_p3jwtg.avif',title:'江湖掠影五'},
+  {url:artBase+'1757397227211_qdqqd_4naopb.avif',title:'江湖掠影六'},
+  {url:artBase+'1757397350020_qdqqd_znw12b.avif',title:'江湖掠影七',wide:true},
+  {url:artBase+'1757397634377_qdqqd_5aahta.avif',title:'江湖掠影八'},
+  {url:artBase+'1757397754462_qdqqd_02liwl.avif',title:'江湖掠影九'},
+  {url:artBase+'1757397842303_qdqqd_decdsj.avif',title:'江湖掠影十'},
+  {url:artBase+'1757397988662_qdqqd_p6vxpa.avif',title:'江湖掠影十一'},
+  {url:artBase+'1757398032293_qdqqd_50932h.avif',title:'江湖掠影十二'}
+];
+
+let currentChar=0,currentArt=0,currentPage=0,currentVideo=0,currentOrg=0,currentRank='power';
+let filteredChars=[];
+const CHARS_PER_PAGE=30;
+
+function loadData(){try{const saved=localStorage.getItem(STORAGE_KEY);if(saved){const data=JSON.parse(saved);if(data.siteInfo)siteInfo=data.siteInfo;if(data.characters&&data.characters.length>0)characters=data.characters;else characters=[...defaultCharacters];}else characters=[...defaultCharacters];}catch(e){characters=[...defaultCharacters];}try{const savedGallery=localStorage.getItem('yunguizhu_gallery');if(savedGallery){const g=JSON.parse(savedGallery);if(g&&g.length>0)galleryImages=g;}}catch(e){}// 视频列表已更新，不再从localStorage读取旧视频
+try{localStorage.removeItem('yunguizhu_videos');}catch(e){}}
+function saveData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({siteInfo,characters}));}catch(e){}}
+
+function hideLoader(){const l=document.getElementById('loader');if(l&&!l.classList.contains('hidden'))l.classList.add('hidden');}
+document.addEventListener('DOMContentLoaded',function(){setTimeout(hideLoader,1500);});
+setTimeout(hideLoader,5000);
+
+const canvas=document.getElementById('particleCanvas');
+const ctx=canvas.getContext('2d');
+let particles=[];
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+class Particle{constructor(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*2+0.5;this.speedX=(Math.random()-0.5)*0.3;this.speedY=(Math.random()-0.5)*0.3;this.opacity=Math.random()*0.5+0.2;}
+update(){this.x+=this.speedX;this.y+=this.speedY;if(this.x<0||this.x>canvas.width)this.speedX*=-1;if(this.y<0||this.y>canvas.height)this.speedY*=-1;}
+draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle='rgba(212,175,55,'+this.opacity+')';ctx.fill();}}
+for(let i=0;i<70;i++)particles.push(new Particle());
+function animateParticles(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw();});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<120){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle='rgba(212,175,55,'+(0.08*(1-dist/120))+')';ctx.stroke();}}requestAnimationFrame(animateParticles);}
+animateParticles();
+
+const audio=document.getElementById('bgAudio');
+const audioBtn=document.getElementById('audioBtn');
+let isPlaying=false;
+let currentSongIdx=0;
+const songs=[
+  {name:'燕云十六声 - 登录曲',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'},
+  {name:'燕云十六声 - 不见山',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'},
+  {name:'燕云十六声 - 春江花月夜',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'},
+  {name:'燕云十六声 - 归舟',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'},
+  {name:'燕云十六声 - 河西',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3'},
+  {name:'燕云十六声 - 江南最忆杭州',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3'},
+  {name:'燕云十六声 - 杭州城玉山最胜',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3'},
+  {name:'燕云十六声 - 清宵舞月明',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3'},
+  {name:'燕云十六声 - 欢鼓奏明春',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3'},
+  {name:'燕云十六声 - 寥寥长生',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3'},
+  {name:'燕云十六声 - 镇守无明春山',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3'},
+  {name:'燕云十六声 - 过春山',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3'},
+  {name:'燕云十六声 - 风起之时',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3'},
+  {name:'燕云十六声 - 凉州箫鼓',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3'},
+  {name:'燕云十六声 - 青山不改',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3'}
+];
+audio.volume=0.3;
+function playSong(idx){currentSongIdx=idx;audio.src=songs[idx].url;audio.play().then(()=>{isPlaying=true;audioBtn.textContent='❚❚';audioBtn.classList.add('playing');}).catch(()=>{});document.querySelectorAll('.audio-playlist__item').forEach((item,i)=>{item.classList.toggle('active',i===idx);});document.getElementById('nowPlaying').textContent='♫ '+songs[idx].name;}
+audioBtn.addEventListener('click',function(){if(isPlaying){audio.pause();audioBtn.textContent='▶';audioBtn.classList.remove('playing');}else{audio.play().catch(()=>{});audioBtn.textContent='❚❚';audioBtn.classList.add('playing');}isPlaying=!isPlaying;});
+document.getElementById('volumeSlider').addEventListener('input',function(){audio.volume=parseFloat(this.value);});
+document.getElementById('playlistBtn').addEventListener('click',function(){document.getElementById('audioPlaylist').classList.toggle('open');});
+document.querySelectorAll('.audio-playlist__item').forEach(function(item){item.addEventListener('click',function(){const idx=parseInt(item.dataset.idx);playSong(idx);document.getElementById('audioPlaylist').classList.remove('open');});});
+audio.addEventListener('ended',function(){playSong((currentSongIdx+1)%songs.length);});
+/* 音乐进度条 */
+const progressBar=document.getElementById('progressBar');
+const progressFill=document.getElementById('progressFill');
+const currentTimeEl=document.getElementById('currentTime');
+const totalTimeEl=document.getElementById('totalTime');
+function formatTime(s){if(isNaN(s))return'0:00';const m=Math.floor(s/60);const sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
+audio.addEventListener('loadedmetadata',function(){totalTimeEl.textContent=formatTime(audio.duration);});
+audio.addEventListener('timeupdate',function(){if(audio.duration){progressFill.style.width=(audio.currentTime/audio.duration*100)+'%';currentTimeEl.textContent=formatTime(audio.currentTime);}});
+let isDragging=false;
+progressBar.addEventListener('mousedown',function(e){isDragging=true;seekProgress(e);});
+document.addEventListener('mousemove',function(e){if(isDragging)seekProgress(e);});
+document.addEventListener('mouseup',function(){isDragging=false;});
+function seekProgress(e){const rect=progressBar.getBoundingClientRect();const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));if(audio.duration){audio.currentTime=pct*audio.duration;progressFill.style.width=(pct*100)+'%';}}
+
+const mainNav=document.getElementById('mainNav');
+const backTop=document.getElementById('backTop');
+const scrollProgress=document.getElementById('scrollProgress');
+window.addEventListener('scroll',function(){const scrolled=window.scrollY;if(scrolled>80){mainNav.classList.add('scrolled');backTop.classList.add('visible');}else{mainNav.classList.remove('scrolled');backTop.classList.remove('visible');}const docHeight=document.documentElement.scrollHeight-window.innerHeight;scrollProgress.style.width=(scrolled/docHeight*100)+'%';});
+function scrollToSection(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});const nav=document.getElementById('navMenu');if(nav)nav.classList.remove('open');}
+function toggleNav(){document.getElementById('navMenu').classList.toggle('open');}
+
+function animateNumbers(){document.querySelectorAll('.stats__number').forEach(function(el){const target=parseInt(el.dataset.target);let current=0;const step=target/50;const timer=setInterval(function(){current+=step;if(current>=target){current=target;clearInterval(timer);}el.textContent=Math.floor(current);},25);});}
+const statsObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting&&!entry.target.dataset.done){entry.target.dataset.done='1';animateNumbers();}});},{threshold:0.3});
+const statsSection=document.querySelector('.stats');
+if(statsSection)statsObserver.observe(statsSection);
+
+const revealObserver=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting)entry.target.classList.add('visible');});},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(function(el){revealObserver.observe(el);});
+
+const videoDots=document.getElementById('videoDots');
+// 强制更新视频列表到最新
+updateVideo();
+videos.forEach(function(v,i){const dot=document.createElement('div');dot.className='video-carousel__dot'+(i===0?' active':'');dot.addEventListener('click',function(){currentVideo=i;updateVideo();});videoDots.appendChild(dot);});
+function updateVideo(){document.getElementById('videoIframe').src=videos[currentVideo];document.querySelectorAll('.video-carousel__dot').forEach(function(d,i){d.classList.toggle('active',i===currentVideo);});}
+function nextVideo(){currentVideo=(currentVideo+1)%videos.length;updateVideo();}
+function prevVideo(){currentVideo=(currentVideo-1+videos.length)%videos.length;updateVideo();}
+
+function updateOrg(){const org=activities[currentOrg];document.getElementById('orgImg').src=org.image;document.getElementById('orgTitle').textContent=org.name;document.getElementById('orgDesc').textContent=org.desc;document.getElementById('orgStats').innerHTML='<span>主持：'+org.host+'</span><span>时间：'+org.time+'</span><span>地点：'+org.location+'</span>';}
+function nextOrg(){currentOrg=(currentOrg+1)%activities.length;updateOrg();}
+function prevOrg(){currentOrg=(currentOrg-1+activities.length)%activities.length;updateOrg();}
+
+function getFilteredChars(){const search=document.getElementById('charSearch').value.toLowerCase();const activeFilter=document.querySelector('.character-showcase__filter.active');let result=characters.filter(function(c){const matchSearch=!search||c.name.toLowerCase().indexOf(search)>=0||c.role.toLowerCase().indexOf(search)>=0;const matchRole=!activeFilter||activeFilter.dataset.role==='all'||c.role===activeFilter.dataset.role;return matchSearch&&matchRole;});return result.length>0?result:characters;}
+function renderFilters(){const roles=['all',...new Set(characters.map(function(c){return c.role;}))];const container=document.getElementById('charFilters');container.innerHTML='';roles.forEach(function(role,i){const btn=document.createElement('div');btn.className='character-showcase__filter'+(i===0?' active':'');btn.dataset.role=role;btn.textContent=role==='all'?'全部':role;btn.addEventListener('click',function(){document.querySelectorAll('.character-showcase__filter').forEach(function(f){f.classList.remove('active');});btn.classList.add('active');currentPage=0;renderCharList();});container.appendChild(btn);});}
+function renderCharList(){filteredChars=getFilteredChars();const listContainer=document.getElementById('charList');const start=currentPage*CHARS_PER_PAGE;const end=start+CHARS_PER_PAGE;const pageChars=filteredChars.slice(start,end);listContainer.innerHTML='';pageChars.forEach(function(c,index){const actualIndex=characters.indexOf(c);const item=document.createElement('div');item.className='character-showcase__item'+(actualIndex===currentChar?' active':'');item.innerHTML='<div class="avatar-wrap"><img src="'+c.avatar+'" alt="'+c.name+'" loading="lazy"></div><span>'+c.name+'</span>';item.addEventListener('click',function(){selectChar(actualIndex);});listContainer.appendChild(item);});renderPageIndicators();}
+function updateCharListActive(){const items=document.querySelectorAll('#charList .character-showcase__item');const start=currentPage*CHARS_PER_PAGE;const pageChars=filteredChars.slice(start,start+CHARS_PER_PAGE);items.forEach(function(item,index){const c=pageChars[index];if(c){const actualIndex=characters.indexOf(c);item.classList.toggle('active',actualIndex===currentChar);}});}
+function renderPageIndicators(){const totalPages=Math.ceil(filteredChars.length/CHARS_PER_PAGE);const container=document.getElementById('pageIndicators');container.innerHTML='';for(let i=0;i<totalPages;i++){const ind=document.createElement('div');ind.className='character-showcase__page-indicator'+(i===currentPage?' active':'');ind.textContent=i+1;ind.addEventListener('click',function(){currentPage=i;renderCharList();});container.appendChild(ind);}}
+function selectChar(index){currentChar=index;currentArt=0;const c=characters[index];document.getElementById('charName').textContent=c.name;document.getElementById('charRole').textContent=c.role;document.getElementById('charPower').textContent='战力 '+c.power;document.getElementById('charDesc').textContent=c.desc;document.getElementById('charArtImg').src=c.art[0];const tagsContainer=document.getElementById('charTags');tagsContainer.innerHTML='';const displayTags=[c.role,'活跃 '+c.activity,'贡献 '+c.contribution];displayTags.forEach(function(t){const span=document.createElement('span');span.className='character-showcase__tag';span.textContent=t;tagsContainer.appendChild(span);});updateCharListActive();}
+function nextCharArt(){const c=characters[currentChar];if(c.art.length<=1){openLightbox(c.art[0]);return;}currentArt=(currentArt+1)%c.art.length;document.getElementById('charArtImg').src=c.art[currentArt];}
+function nextPage(){const totalPages=Math.ceil(filteredChars.length/CHARS_PER_PAGE);currentPage=(currentPage+1)%totalPages;renderCharList();}
+function prevPage(){const totalPages=Math.ceil(filteredChars.length/CHARS_PER_PAGE);currentPage=(currentPage-1+totalPages)%totalPages;renderCharList();}
+function filterCharacters(){currentPage=0;renderCharList();}
+
+function renderRank(){const list=document.getElementById('rankList');let sorted;if(currentRank==='power')sorted=[...characters].sort((a,b)=>b.power-a.power);else if(currentRank==='contribution')sorted=[...characters].sort((a,b)=>b.contribution-a.contribution);else sorted=[...characters].sort((a,b)=>b.activity-a.activity);list.innerHTML='';sorted.forEach(function(c,i){const item=document.createElement('div');item.className='rank__item'+(i===0?' rank__item--top1':i===1?' rank__item--top2':i===2?' rank__item--top3':'');const value=currentRank==='power'?c.power:currentRank==='contribution'?c.contribution:c.activity;const unit=currentRank==='power'?'战力':currentRank==='contribution'?'贡献':'活跃';item.innerHTML='<div class="rank__num">'+(i+1)+'</div><img class="rank__avatar" src="'+c.avatar+'" alt="" onclick="openRankViewer('+i+')"><div class="rank__info"><div class="rank__name">'+c.name+'</div><div class="rank__role">'+c.role+'</div></div><div class="rank__value">'+value+'</div>';list.appendChild(item);});window.rankSorted=sorted;}
+function switchRank(type){currentRank=type;document.querySelectorAll('.rank__tab').forEach(function(t){t.classList.remove('active');});event.target.classList.add('active');renderRank();}
+
+function showCarouselDetail(){if(typeof stopCarouselAuto==='function'){try{stopCarouselAuto();}catch(e){}}if(typeof currentChar!=='undefined'&&typeof carouselIndex!=='undefined')currentChar=carouselIndex;try{if(typeof selectChar==='function')selectChar(carouselIndex);}catch(e){}openCharModal();}
+const charModal=document.getElementById('charModal');
+function openCharModal(){const c=characters[currentChar];document.getElementById('modalAvatar').src=c.avatar;document.getElementById('modalName').textContent=c.name;document.getElementById('modalRole').textContent=c.role;document.getElementById('modalPower').textContent='战力 '+c.power+' · 贡献 '+c.contribution+' · 活跃 '+c.activity;document.getElementById('modalDesc').textContent=c.desc;document.getElementById('modalTags').innerHTML=c.tags.map(function(t){return '<span class="modal__tag">'+t+'</span>';}).join('');var artArr=c.art?(Array.isArray(c.art)?c.art:[c.art]):[c.avatar];document.getElementById('modalGallery').innerHTML=artArr.map(function(a){return '<img src="'+a+'" alt="" onclick="openLightbox(\''+a+'\')">';}).join('');charModal.classList.add('active');document.body.style.overflow='hidden';}
+function closeCharModal(){charModal.classList.remove('active');document.body.style.overflow='';}
+charModal.addEventListener('click',function(e){if(e.target===charModal)closeCharModal();});
+
+const lightbox=document.getElementById('lightbox');
+let lightboxIdx=0;
+let lightboxImages=[];
+function openLightbox(url,idx){if(typeof idx==='number'){lightboxIdx=idx;}else{lightboxIdx=lightboxImages.findIndex(function(g){return g.url===url;});if(lightboxIdx<0)lightboxIdx=0;}updateLightbox();lightbox.classList.add('active');document.body.style.overflow='hidden';}
+function closeLightbox(){lightbox.classList.remove('active');document.body.style.overflow='';}
+function updateLightbox(){const img=lightboxImages[lightboxIdx];if(img){document.getElementById('lightboxImg').src=img.url;document.getElementById('lightboxCounter').textContent=(lightboxIdx+1)+' / '+lightboxImages.length;}}
+function prevLightbox(){lightboxIdx=(lightboxIdx-1+lightboxImages.length)%lightboxImages.length;updateLightbox();}
+function nextLightbox(){lightboxIdx=(lightboxIdx+1)%lightboxImages.length;updateLightbox();}
+
+function renderGallery(){const grid=document.getElementById('galleryGrid');lightboxImages=galleryImages;if(!grid)return;grid.innerHTML='';galleryImages.forEach(function(g,i){const item=document.createElement('div');item.className='gallery__item reveal'+(g.wide?' gallery__item--wide':'')+(g.tall?' gallery__item--tall':'');item.innerHTML='<img src="'+g.url+'" alt="'+g.title+'" loading="lazy"><div class="gallery__item-overlay"><div class="gallery__item-title">'+g.title+'</div></div>';item.addEventListener('click',function(){openLightbox(g.url,i);});grid.appendChild(item);revealObserver.observe(item);});}
+
+function toggleFaq(item){item.classList.toggle('open');}
+
+function showToast(msg){let t=document.getElementById('globalToast');if(!t){t=document.createElement('div');t.id='globalToast';t.className='toast';document.body.appendChild(t);}t.textContent=msg;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(function(){t.classList.remove('show');},2600);}
+async function submitJoin(){
+  const id=document.querySelector('.join__form input[placeholder*="游戏ID"]').value.trim();
+  const tag=document.querySelector('.join__form input[placeholder*="身份标签"]').value.trim();
+  const msg=document.querySelector('.join__form textarea').value.trim();
+  if(!id){showToast('请填写游戏ID！');return;}
+  const newMsg={name:id,tag:tag,msg:msg,time:new Date().toLocaleString(),likes:0,replies:[]};
+  if(supabase){
+    try{await supabase.from('messages').insert(newMsg);await loadMessagesFromCloud();}catch(e){console.warn('insert error',e);}
+  }else{
+    const messages=JSON.parse(localStorage.getItem('yunguizhu_messages')||'[]');
+    messages.push({id:'m_'+Date.now(),...newMsg,liked:false});
+    localStorage.setItem('yunguizhu_messages',JSON.stringify(messages));
+    renderMessages();
+  }
+  document.querySelector('.join__form input[placeholder*="游戏ID"]').value='';
+  document.querySelector('.join__form input[placeholder*="身份标签"]').value='';
+  document.querySelector('.join__form textarea').value='';
+  showToast('痕迹已留下！已显示在下方留言墙，江湖路远，同去同归。');
+}
+// ========== 默认留言（首次加载注入50条） ==========
+const defaultMessages=[
+  {
+    "id": "default_1",
+    "name": "墨尘",
+    "tag": "老成员",
+    "msg": "云深不知归处，渚清沙白鸟飞回。江湖路远，后会有期。",
+    "time": "2026-01-01 00:00",
+    "likes": 0,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_2",
+    "name": "苏挽晴",
+    "tag": "退游留念",
+    "msg": "烟岚云岫的日子，是我最珍贵的回忆。",
+    "time": "2026-02-02 01:07",
+    "likes": 3,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_3",
+    "name": "叶知秋",
+    "tag": "截图党",
+    "msg": "虽然退游了，但兄弟们永远在心里。",
+    "time": "2026-03-03 02:14",
+    "likes": 6,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_4",
+    "name": "白浅",
+    "tag": "唱歌的",
+    "msg": "第一次打副本的紧张，现在还记得。",
+    "time": "2026-04-04 03:21",
+    "likes": 9,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_5",
+    "name": "顾长歌",
+    "tag": "生活玩家",
+    "msg": "云归渚，永远的家。",
+    "time": "2026-05-05 04:28",
+    "likes": 12,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_6",
+    "name": "沈清欢",
+    "tag": "风景党",
+    "msg": "愿诸位江湖顺遂，万事胜意。",
+    "time": "2026-06-06 05:35",
+    "likes": 15,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_7",
+    "name": "洛璃",
+    "tag": "副本党",
+    "msg": "在这里遇到了最好的帮派，最好的人。",
+    "time": "2026-07-07 06:42",
+    "likes": 18,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_8",
+    "name": "楚云深",
+    "tag": "PVP玩家",
+    "msg": "退游不脱粉，云归渚永远是我心头好。",
+    "time": "2026-08-08 07:49",
+    "likes": 1,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_9",
+    "name": "江晚吟",
+    "tag": "休闲玩家",
+    "msg": "截图存了几百张，每一张都是故事。",
+    "time": "2026-09-09 08:56",
+    "likes": 4,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_10",
+    "name": "温客行",
+    "tag": "内测玩家",
+    "msg": "从烟岚云岫到云归渚，一路同行，感恩遇见。",
+    "time": "2026-01-10 09:03",
+    "likes": 7,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_11",
+    "name": "花满楼",
+    "tag": "老成员",
+    "msg": "七月八日，解散那天，我在屏幕前坐了很久。",
+    "time": "2026-02-11 10:10",
+    "likes": 10,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_12",
+    "name": "陆小凤",
+    "tag": "退游留念",
+    "msg": "不组织不招人，但我们永远是一家人。",
+    "time": "2026-03-12 11:17",
+    "likes": 13,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_13",
+    "name": "西门吹雪",
+    "tag": "截图党",
+    "msg": "想回来看看的时候，这里永远都在。",
+    "time": "2026-04-13 12:24",
+    "likes": 16,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_14",
+    "name": "叶孤城",
+    "tag": "唱歌的",
+    "msg": "江湖再见，各位大侠。",
+    "time": "2026-05-14 13:31",
+    "likes": 19,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_15",
+    "name": "楚留香",
+    "tag": "生活玩家",
+    "msg": "感谢吞吞社长，给了我们一个家。",
+    "time": "2026-06-15 14:38",
+    "likes": 2,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_16",
+    "name": "令狐冲",
+    "tag": "风景党",
+    "msg": "副社长梦酒殇，辛苦了。",
+    "time": "2026-07-16 15:45",
+    "likes": 5,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_17",
+    "name": "任盈盈",
+    "tag": "副本党",
+    "msg": "百业战的那些日子，热血沸腾。",
+    "time": "2026-08-17 16:52",
+    "likes": 8,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_18",
+    "name": "岳灵珊",
+    "tag": "PVP玩家",
+    "msg": "最喜欢和大家一起看风景截图。",
+    "time": "2026-09-18 17:59",
+    "likes": 11,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_19",
+    "name": "林平之",
+    "tag": "休闲玩家",
+    "msg": "唱歌房的夜晚，是最放松的时光。",
+    "time": "2026-01-19 18:06",
+    "likes": 14,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_20",
+    "name": "风清扬",
+    "tag": "内测玩家",
+    "msg": "燕云十六声，因为有你们才精彩。",
+    "time": "2026-02-20 19:13",
+    "likes": 17,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_21",
+    "name": "东方不败",
+    "tag": "老成员",
+    "msg": "留下电子痕迹，证明我来过。",
+    "time": "2026-03-21 20:20",
+    "likes": 0,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_22",
+    "name": "独孤求败",
+    "tag": "退游留念",
+    "msg": "云归渚的每一个人，都是江湖儿女。",
+    "time": "2026-04-22 21:27",
+    "likes": 3,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_23",
+    "name": "张三丰",
+    "tag": "截图党",
+    "msg": "虽然不常上线，但群里的消息每条都看。",
+    "time": "2026-05-23 22:34",
+    "likes": 6,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_24",
+    "name": "张无忌",
+    "tag": "唱歌的",
+    "msg": "愿大家现实生活也一切顺利。",
+    "time": "2026-06-24 23:41",
+    "likes": 9,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_25",
+    "name": "赵敏",
+    "tag": "生活玩家",
+    "msg": "江湖路远，同去同归。",
+    "time": "2026-07-25 00:48",
+    "likes": 12,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_26",
+    "name": "周芷若",
+    "tag": "风景党",
+    "msg": "第一次进百业的时候，还是个小白。",
+    "time": "2026-08-26 01:55",
+    "likes": 15,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_27",
+    "name": "小昭",
+    "tag": "副本党",
+    "msg": "现在虽然走了，但技能都学会了。",
+    "time": "2026-09-27 02:02",
+    "likes": 18,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_28",
+    "name": "殷离",
+    "tag": "PVP玩家",
+    "msg": "谢谢大家带我打本，带我看风景。",
+    "time": "2026-01-28 03:09",
+    "likes": 1,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_29",
+    "name": "黄蓉",
+    "tag": "休闲玩家",
+    "msg": "云归渚，名字就很美。",
+    "time": "2026-02-01 04:16",
+    "likes": 4,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_30",
+    "name": "郭靖",
+    "tag": "内测玩家",
+    "msg": "烟岚云岫，改名云归渚，初心未改。",
+    "time": "2026-03-02 05:23",
+    "likes": 7,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_31",
+    "name": "杨过",
+    "tag": "老成员",
+    "msg": "留念站做得真好，看哭了。",
+    "time": "2026-04-03 06:30",
+    "likes": 10,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_32",
+    "name": "小龙女",
+    "tag": "退游留念",
+    "msg": "每一张照片都是回忆杀。",
+    "time": "2026-05-04 07:37",
+    "likes": 13,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_33",
+    "name": "周伯通",
+    "tag": "截图党",
+    "msg": "排行榜上的名字，都是并肩作战的兄弟。",
+    "time": "2026-06-05 08:44",
+    "likes": 16,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_34",
+    "name": "黄药师",
+    "tag": "唱歌的",
+    "msg": "退游快乐，江湖再见。",
+    "time": "2026-07-06 09:51",
+    "likes": 19,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_35",
+    "name": "欧阳锋",
+    "tag": "生活玩家",
+    "msg": "我在云归渚的日子，是游戏生涯最开心的时光。",
+    "time": "2026-08-07 10:58",
+    "likes": 2,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_36",
+    "name": "洪七公",
+    "tag": "风景党",
+    "msg": "希望以后还有机会一起玩。",
+    "time": "2026-09-08 11:05",
+    "likes": 5,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_37",
+    "name": "一灯大师",
+    "tag": "副本党",
+    "msg": "燕云的风景，因为有人一起看才美。",
+    "time": "2026-01-09 12:12",
+    "likes": 8,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_38",
+    "name": "王重阳",
+    "tag": "PVP玩家",
+    "msg": "百业相册里的照片，我每张都存了。",
+    "time": "2026-02-10 13:19",
+    "likes": 11,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_39",
+    "name": "林朝英",
+    "tag": "休闲玩家",
+    "msg": "留言板这个功能太暖心了。",
+    "time": "2026-03-11 14:26",
+    "likes": 14,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_40",
+    "name": "段誉",
+    "tag": "内测玩家",
+    "msg": "留下名字，证明我们曾经一起江湖过。",
+    "time": "2026-04-12 15:33",
+    "likes": 17,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_41",
+    "name": "乔峰",
+    "tag": "老成员",
+    "msg": "云归渚不散，只是换了一种方式存在。",
+    "time": "2026-05-13 16:40",
+    "likes": 0,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_42",
+    "name": "虚竹",
+    "tag": "退游留念",
+    "msg": "纯休闲也挺好，轻松自在。",
+    "time": "2026-06-14 17:47",
+    "likes": 3,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_43",
+    "name": "慕容复",
+    "tag": "截图党",
+    "msg": "不主动招人，但欢迎老朋友回来看看。",
+    "time": "2026-07-15 18:54",
+    "likes": 6,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_44",
+    "name": "鸠摩智",
+    "tag": "唱歌的",
+    "msg": "这里的每一条留言，都是一段故事。",
+    "time": "2026-08-16 19:01",
+    "likes": 9,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_45",
+    "name": "萧远山",
+    "tag": "生活玩家",
+    "msg": "江湖儿女，不拘小节，后会有期。",
+    "time": "2026-09-17 20:08",
+    "likes": 12,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_46",
+    "name": "慕容博",
+    "tag": "风景党",
+    "msg": "从开服到现在，感谢一路有你。",
+    "time": "2026-01-18 21:15",
+    "likes": 15,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_47",
+    "name": "无崖子",
+    "tag": "副本党",
+    "msg": "云归渚的故事，未完待续。",
+    "time": "2026-02-19 22:22",
+    "likes": 18,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_48",
+    "name": "李秋水",
+    "tag": "PVP玩家",
+    "msg": "愿我们在另一个江湖，还能相遇。",
+    "time": "2026-03-20 23:29",
+    "likes": 1,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_49",
+    "name": "天山童姥",
+    "tag": "休闲玩家",
+    "msg": "留下痕迹，不负相遇。",
+    "time": "2026-04-21 00:36",
+    "likes": 4,
+    "liked": false,
+    "replies": []
+  },
+  {
+    "id": "default_50",
+    "name": "扫地僧",
+    "tag": "内测玩家",
+    "msg": "云深不知归处，愿诸位皆有归处。",
+    "time": "2026-05-22 01:43",
+    "likes": 7,
+    "liked": false,
+    "replies": []
+  }
+];
+async function ensureDefaultMessages(){
+  if(!supabase){try{const saved=localStorage.getItem('yunguizhu_messages');if(!saved||JSON.parse(saved).length===0){localStorage.setItem('yunguizhu_messages',JSON.stringify(defaultMessages));}}catch(e){}return;}
+  try{
+    const {data,error}=await supabase.from('messages').select('id').limit(1);
+    if(error){console.warn('check messages error',error);return;}
+    if(!data||data.length===0){
+      for(const m of defaultMessages){
+        await supabase.from('messages').insert({name:m.name,tag:m.tag,msg:m.msg,time:m.time,likes:m.likes||0,replies:m.replies||[]});
+      }
+    }
+    await loadMessagesFromCloud();
+  }catch(e){console.warn('ensureDefaultMessages error',e);}
+}
+// ========== 留言板循环滚动 ==========
+let msgScrollTimer=null;
+function startMessageScroll(){const wrap=document.getElementById('messageWallScroll');if(!wrap)return;if(msgScrollTimer)clearInterval(msgScrollTimer);let paused=false;wrap.addEventListener('mouseenter',function(){paused=true;});wrap.addEventListener('mouseleave',function(){paused=false;});msgScrollTimer=setInterval(function(){if(paused)return;const first=wrap.querySelector('.message-wall__item');if(!first)return;wrap.scrollTop+=1;if(wrap.scrollTop>=first.offsetHeight+12){wrap.appendChild(first);wrap.scrollTop-=first.offsetHeight+12;}},40);}
+
+function renderMessages(){const container=document.getElementById('messageWallList');let messages=cloudMessages.length>0?cloudMessages.slice():JSON.parse(localStorage.getItem('yunguizhu_messages')||'[]');let changed=false;messages.forEach(function(m){if(m.likes===undefined){m.likes=0;changed=true;}if(m.liked===undefined){m.liked=false;changed=true;}if(!m.replies){m.replies=[];changed=true;}if(!m.id){m.id='m_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);changed=true;}});if(changed)localStorage.setItem('yunguizhu_messages',JSON.stringify(messages));if(messages.length===0){container.innerHTML='<div class="message-wall__empty">还没有人留下痕迹，做第一个吧</div>';return;}container.innerHTML='';messages.slice().reverse().forEach(function(m){const name=m.name||m.id||'匿名侠客';const div=document.createElement('div');div.className='message-wall__item';let html='<div class="message-wall__header"><span class="message-wall__name">'+name+'</span>'+(m.tag?'<span class="message-wall__tag">'+m.tag+'</span>':'')+'</div>';html+='<div class="message-wall__content">'+(m.msg||'（什么也没说，只是来过）')+'</div>';html+='<div class="message-wall__time">'+m.time+'</div>';html+='<div class="message-wall__actions"><button class="message-wall__like'+(m.liked?' liked':'')+'" onclick="likeMessage(\''+m.id+'\')"><span class="heart">♥</span><span> '+(m.likes||0)+'</span></button><button class="message-wall__reply-btn" onclick="toggleReplyForm(\''+m.id+'\')">💬 回复</button></div>';if(m.replies&&m.replies.length>0){html+='<div class="message-wall__replies">';m.replies.forEach(function(r){html+='<div class="message-wall__reply-item"><span class="message-wall__reply-name">'+r.name+'</span>：'+r.msg+'<span class="message-wall__reply-time">'+r.time+'</span></div>';});html+='</div>';}html+='<div class="message-wall__reply-form" id="replyForm_'+m.id+'" style="display:none"><input type="text" placeholder="你的名字" id="replyName_'+m.id+'"><input type="text" placeholder="回复内容" id="replyMsg_'+m.id+'"><button class="rbtn" onclick="submitReply(\''+m.id+'\')">回复</button></div>';div.innerHTML=html;container.appendChild(div);});}
+async function likeMessage(id){
+  let m=cloudMessages.find(x=>x.id===id);
+  let isLocal=false;
+  if(!m){const localMsgs=JSON.parse(localStorage.getItem('yunguizhu_messages')||'[]');m=localMsgs.find(x=>x.id===id);isLocal=true;if(!m)return;}
+  const newLikes=m.liked?(m.likes||1)-1:(m.likes||0)+1;
+  const newLiked=!m.liked;
+  if(supabase&&!isLocal){
+    try{await supabase.from('messages').update({likes:newLikes}).eq('id',id);}catch(e){console.warn('update likes error',e);}
+  }
+  m.likes=newLikes;m.liked=newLiked;
+  const likedIds=JSON.parse(localStorage.getItem('yunguizhu_liked')||'[]');
+  if(newLiked){if(!likedIds.includes(id))likedIds.push(id);}else{const i=likedIds.indexOf(id);if(i>-1)likedIds.splice(i,1);}
+  localStorage.setItem('yunguizhu_liked',JSON.stringify(likedIds));
+  if(isLocal){const localMsgs=JSON.parse(localStorage.getItem('yunguizhu_messages')||'[]');localMsgs.forEach(x=>{if(x.id===id){x.likes=newLikes;x.liked=newLiked;}});localStorage.setItem('yunguizhu_messages',JSON.stringify(localMsgs));}
+  renderMessages();
+}
+function toggleReplyForm(id){const f=document.getElementById('replyForm_'+id);if(f)f.style.display=f.style.display==='none'?'flex':'none';}
+async function submitReply(id){
+  const name=document.getElementById('replyName_'+id).value.trim();
+  const msg=document.getElementById('replyMsg_'+id).value.trim();
+  if(!name||!msg){showToast('请填写名字和回复内容');return;}
+  let m=cloudMessages.find(x=>x.id===id);
+  let isLocal=false;
+  if(!m){const localMsgs=JSON.parse(localStorage.getItem('yunguizhu_messages')||'[]');m=localMsgs.find(x=>x.id===id);isLocal=true;if(!m)return;}
+  if(!m.replies)m.replies=[];
+  m.replies.push({name:name,msg:msg,time:new Date().toLocaleString()});
+  if(supabase&&!isLocal){
+    try{await supabase.from('messages').update({replies:m.replies}).eq('id',id);}catch(e){console.warn('update replies error',e);}
+  }else if(isLocal){
+    const localMsgs=JSON.parse(localStorage.getItem('yunguizhu_messages')||'[]');localMsgs.forEach(x=>{if(x.id===id)x.replies=m.replies;});localStorage.setItem('yunguizhu_messages',JSON.stringify(localMsgs));
+  }
+  renderMessages();
+}
+
+function openAdmin(){if(sessionStorage.getItem('adminLoggedIn')==='true'){document.getElementById('adminPanel').classList.add('open');renderAdminMemberList();renderAdminMessages();renderAdminGallery();renderAdminVideos();}else{document.getElementById('adminLogin').classList.add('active');document.getElementById('loginUser').focus();}}
+function closeAdmin(){document.getElementById('adminPanel').classList.remove('open');}
+function switchAdminTab(tab,tabId){document.querySelectorAll('.admin-tab').forEach(function(t){t.classList.remove('active');});document.querySelectorAll('.admin-tab-content').forEach(function(c){c.classList.remove('active');});tab.classList.add('active');document.getElementById(tabId).classList.add('active');}
+function closeLogin(){document.getElementById('adminLogin').classList.remove('active');document.getElementById('loginError').textContent='';}
+function doLogin(){const u=document.getElementById('loginUser').value.trim();const p=document.getElementById('loginPass').value.trim();if(u==='admin'&&p==='yunguizhu888'){sessionStorage.setItem('adminLoggedIn','true');closeLogin();document.getElementById('adminPanel').classList.add('open');renderAdminMemberList();renderAdminMessages();renderAdminGallery();renderAdminVideos();}else{document.getElementById('loginError').textContent='账号或密码错误';document.getElementById('loginPass').value='';}}
+function saveSiteInfo(){siteInfo.name=document.getElementById('adminName').value;siteInfo.slogan=document.getElementById('adminSlogan').value;siteInfo.desc=document.getElementById('adminDesc').value;saveData();document.title=siteInfo.name+' · 留念站';document.querySelector('.main-nav__brand h2').textContent=siteInfo.name;document.querySelector('.hero-section__title').textContent=siteInfo.name;document.querySelector('.hero-section__subtitle').textContent=siteInfo.slogan;document.querySelector('.loader__title').textContent=siteInfo.name;alert('基本信息已保存！前台已实时更新。');}
+function addMember(){const name=document.getElementById('newName').value.trim();const role=document.getElementById('newRole').value.trim();const avatar=document.getElementById('newAvatar').value.trim();const desc=document.getElementById('newDesc').value.trim();if(!name||!role){alert('请填写成员名称和职位！');return;}const newChar={id:Date.now(),name:name,role:role,tags:['新成员'],desc:desc||'这位成员很神秘，什么都没有留下。',avatar:avatar||'https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/player/avatar/avatar11.avif',art:[avatar||'https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/player/avatar/avatar11.avif'],power:5000,contribution:100,activity:50};characters.push(newChar);saveData();document.getElementById('newName').value='';document.getElementById('newRole').value='';document.getElementById('newAvatar').value='';document.getElementById('newDesc').value='';renderFilters();renderCharList();renderAdminMemberList();renderRank();alert('成员添加成功！当前成员数：'+characters.length);}
+function deleteMember(id){if(!confirm('确定要删除这个成员吗？'))return;characters=characters.filter(function(c){return c.id!==id;});if(currentChar>=characters.length)currentChar=0;saveData();selectChar(currentChar);renderFilters();renderCharList();renderAdminMemberList();renderRank();}
+function renderAdminMemberList(){const container=document.getElementById('adminMemberList');container.innerHTML='';characters.forEach(function(c){const item=document.createElement('div');item.className='admin-panel__member-item';item.innerHTML='<img src="'+c.avatar+'" alt=""><span>'+c.name+'（'+c.role+'）战力'+c.power+'</span><button onclick="editMember('+c.id+')" style="color:#d4af37;margin-right:5px">✎</button><button onclick="deleteMember('+c.id+')">✕</button>';container.appendChild(item);});}
+function editMember(id){const c=characters.find(function(x){return x.id===id;});if(!c)return;document.getElementById('editMemberId').value=id;document.getElementById('editName').value=c.name;document.getElementById('editRole').value=c.role;document.getElementById('editPower').value=c.power;document.getElementById('editContribution').value=c.contribution;document.getElementById('editActivity').value=c.activity;document.getElementById('editAvatar').value=c.avatar;document.getElementById('editTags').value=(c.tags||[]).join(',');document.getElementById('editDesc').value=c.desc;document.getElementById('memberEditModal').classList.add('active');}
+function saveMemberEdit(){const id=parseInt(document.getElementById('editMemberId').value);const c=characters.find(function(x){return x.id===id;});if(!c)return;c.name=document.getElementById('editName').value.trim();c.role=document.getElementById('editRole').value.trim();c.power=parseInt(document.getElementById('editPower').value)||0;c.contribution=parseInt(document.getElementById('editContribution').value)||0;c.activity=parseInt(document.getElementById('editActivity').value)||0;c.avatar=document.getElementById('editAvatar').value.trim();c.tags=document.getElementById('editTags').value.split(',').map(function(t){return t.trim();}).filter(function(t){return t;});c.desc=document.getElementById('editDesc').value.trim();if(c.art&&c.art.length>0)c.art[0]=c.avatar;else c.art=[c.avatar];saveData();renderAdminMemberList();renderFilters();renderCharList();renderRank();selectChar(characters.findIndex(function(x){return x.id===id;}));closeMemberEdit();alert('成员信息已保存！');}
+function closeMemberEdit(){document.getElementById('memberEditModal').classList.remove('active');}
+function exportData(){const dataStr=JSON.stringify({siteInfo,characters},null,2);const blob=new Blob([dataStr],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='yunguizhu_data.json';a.click();URL.revokeObjectURL(url);}
+function resetData(){if(!confirm('确定要重置所有数据吗？这将恢复默认86位成员列表。'))return;localStorage.removeItem(STORAGE_KEY);location.reload();}
+/* 外观设置 */
+function saveAppearance(){const color=document.getElementById('adminThemeColor').value;const heroBg=document.getElementById('adminHeroBg').value.trim();const loaderBg=document.getElementById('adminLoaderBg').value.trim();const settings=JSON.parse(localStorage.getItem('yunguizhu_settings')||'{}');settings.themeColor=color;if(heroBg)settings.heroBg=heroBg;if(loaderBg)settings.loaderBg=loaderBg;localStorage.setItem('yunguizhu_settings',JSON.stringify(settings));applySettings();alert('外观设置已保存！');}
+/* 光效设置 */
+function saveEffects(){const settings=JSON.parse(localStorage.getItem('yunguizhu_settings')||'{}');settings.particles=document.getElementById('toggleParticles').checked;settings.leaves=document.getElementById('toggleLeaves').checked;settings.cursorGlow=document.getElementById('toggleCursorGlow').checked;settings.titleGlow=document.getElementById('toggleTitleGlow').checked;localStorage.setItem('yunguizhu_settings',JSON.stringify(settings));applySettings();alert('光效设置已保存！');}
+/* 歌曲管理 */
+/* 视频管理 */
+function renderAdminVideos(){const container=document.getElementById('adminVideoList');container.innerHTML='';videos.forEach(function(v,i){const div=document.createElement('div');div.className='admin-panel__song-item';div.innerHTML='<input type="text" value="'+v+'" data-idx="'+i+'" placeholder="视频URL（抖音embed链接）"><button onclick="removeVideo('+i+')">✕</button>';container.appendChild(div);});}
+function addVideoInput(){videos.push('');renderAdminVideos();saveVideos();}
+function removeVideo(idx){videos.splice(idx,1);renderAdminVideos();saveVideos();updateVideo();}
+function saveVideos(){document.querySelectorAll('#adminVideoList input').forEach(function(inp){const idx=parseInt(inp.dataset.idx);if(videos[idx]!==undefined)videos[idx]=inp.value;});localStorage.setItem('yunguizhu_videos',JSON.stringify(videos));updateVideo();}
+document.addEventListener('input',function(e){if(e.target.closest('#adminVideoList'))saveVideos();});
+function renderAdminSongs(){const container=document.getElementById('adminSongList');container.innerHTML='';songs.forEach(function(s,i){const div=document.createElement('div');div.className='admin-panel__song-item';div.innerHTML='<input type="text" value="'+s.name+'" data-idx="'+i+'" data-field="name" placeholder="歌曲名"><input type="text" value="'+s.url+'" data-idx="'+i+'" data-field="url" placeholder="歌曲URL"><button onclick="removeSong('+i+')">✕</button>';container.appendChild(div);});}
+/* 留言管理 */
+function renderAdminMessages(){const container=document.getElementById('adminMessageList');const messages=JSON.parse(localStorage.getItem('yunguizhu_messages')||'[]');if(messages.length===0){container.innerHTML='<p style="color:#718096;font-size:.85rem;">暂无留言</p>';return;}container.innerHTML='';messages.forEach(function(m,i){const name=m.name||m.id||'匿名侠客';const div=document.createElement('div');div.className='admin-panel__member-item';div.innerHTML='<span style="flex:1;"><strong>'+name+'</strong> '+(m.tag||'')+'<br><span style="color:#a0aec0;font-size:.8rem;">'+(m.msg||'')+'</span><br><span style="color:#718096;font-size:.7rem;">'+m.time+' · ♥'+(m.likes||0)+' · 回复'+(m.replies?m.replies.length:0)+'</span></span><button onclick="deleteMessage('+i+')">✕</button>';container.appendChild(div);});}
+/* 相册管理 */
+function renderAdminGallery(){const container=document.getElementById('adminGalleryList');container.innerHTML='';galleryImages.forEach(function(g,i){const div=document.createElement('div');div.className='admin-panel__song-item';div.innerHTML='<input type="text" value="'+g.title+'" data-idx="'+i+'" data-field="title" placeholder="图片标题"><input type="text" value="'+g.url+'" data-idx="'+i+'" data-field="url" placeholder="图片URL"><button onclick="removeGallery('+i+')">✕</button>';container.appendChild(div);});}
+function addGalleryInput(){galleryImages.push({title:'新图片',url:'',wide:false,tall:false});renderAdminGallery();saveGallery();}
+function removeGallery(idx){galleryImages.splice(idx,1);renderAdminGallery();saveGallery();renderGallery();}
+function saveGallery(){document.querySelectorAll('#adminGalleryList input').forEach(function(inp){const idx=parseInt(inp.dataset.idx);const field=inp.dataset.field;if(galleryImages[idx])galleryImages[idx][field]=inp.value;});localStorage.setItem('yunguizhu_gallery',JSON.stringify(galleryImages));renderGallery();}
+document.addEventListener('input',function(e){if(e.target.closest('#adminGalleryList'))saveGallery();});
+function addSongInput(){songs.push({name:'新歌曲',url:''});renderAdminSongs();saveSongs();}
+function removeSong(idx){songs.splice(idx,1);renderAdminSongs();saveSongs();}
+function saveSongs(){document.querySelectorAll('.admin-panel__song-item input').forEach(function(inp){const idx=parseInt(inp.dataset.idx);const field=inp.dataset.field;if(songs[idx])songs[idx][field]=inp.value;});renderPlaylist();if(currentSongIdx>=songs.length)currentSongIdx=0;}
+document.addEventListener('input',function(e){if(e.target.closest('.admin-panel__song-item'))saveSongs();});
+/* 应用所有设置 */
+function applySettings(){const settings=JSON.parse(localStorage.getItem('yunguizhu_settings')||'{}');if(settings.themeColor){document.documentElement.style.setProperty('--theme-color',settings.themeColor);}if(settings.heroBg){document.querySelector('.hero-section').style.backgroundImage="url('"+settings.heroBg+"')";}if(settings.loaderBg){document.querySelector('.loader').style.backgroundImage="url('"+settings.loaderBg+"')";}if(settings.particles===false){document.getElementById('particleCanvas').style.display='none';}if(settings.leaves===false){document.getElementById('leafContainer').style.display='none';}if(settings.cursorGlow===false){document.getElementById('cursorGlow').style.display='none';}if(settings.titleGlow===false){document.querySelector('.hero-section__title').style.textShadow='none';}}
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeCharModal();closeLightbox();closeAdmin();}if(lightbox.classList.contains('active')){if(e.key==='ArrowLeft')prevLightbox();if(e.key==='ArrowRight')nextLightbox();return;}if(e.key==='ArrowLeft'){if(charModal.classList.contains('active'))return;if(document.getElementById('video').getBoundingClientRect().top<window.innerHeight/2&&document.getElementById('video').getBoundingClientRect().bottom>0)prevVideo();else if(document.getElementById('activity').getBoundingClientRect().top<window.innerHeight/2&&document.getElementById('activity').getBoundingClientRect().bottom>0)prevOrg();}if(e.key==='ArrowRight'){if(charModal.classList.contains('active'))return;if(document.getElementById('video').getBoundingClientRect().top<window.innerHeight/2&&document.getElementById('video').getBoundingClientRect().bottom>0)nextVideo();else if(document.getElementById('activity').getBoundingClientRect().top<window.innerHeight/2&&document.getElementById('activity').getBoundingClientRect().bottom>0)nextOrg();}});
+
+loadData();
+renderFilters();
+renderCharList();
+selectChar(0);
+updateOrg();
+if(typeof renderPhotoWall3d==='function')renderPhotoWall3d();
+renderRank();
+applySettings();
+renderAdminSongs();
+renderMessages();
+
+/* 鼠标跟随光晕 */
+const cursorGlow=document.getElementById('cursorGlow');
+const cursorDot=document.getElementById('cursorDot');
+document.body.style.cursor='none';
+document.querySelectorAll('a,button,.btn,.character-showcase__item,.gallery__item,.rank__item,.audio-playlist__item,.faq__question,.footer__social-icon,.main-nav__link,.main-nav__brand,.video-carousel__btn,.organization-carousel__btn,.character-showcase__filter,.character-showcase__page-btn,.character-showcase__artwork-container,.character-showcase__name,.join__btn,.back-top,.admin-panel__close,.admin-panel__btn,.modal__close,.lightbox__close,.lightbox__nav,.rank-viewer__close,.rank-viewer__btn,.admin-login__btn,.admin-login__close,.nav-toggle,.admin-panel__member-item button,.admin-panel__song-item button,.admin-tab,.member-edit-modal__close').forEach(el=>{el.style.cursor='none';el.addEventListener('mouseenter',()=>cursorDot.classList.add('hover'));el.addEventListener('mouseleave',()=>cursorDot.classList.remove('hover'));});
+let mouseX=0,mouseY=0,glowX=0,glowY=0;
+document.addEventListener('mousemove',function(e){mouseX=e.clientX;mouseY=e.clientY;cursorGlow.style.opacity='1';cursorDot.style.left=e.clientX+'px';cursorDot.style.top=e.clientY+'px';});
+document.addEventListener('mouseleave',function(){cursorGlow.style.opacity='0';});
+function animateCursorGlow(){glowX+=(mouseX-glowX)*0.1;glowY+=(mouseY-glowY)*0.1;cursorGlow.style.left=glowX+'px';cursorGlow.style.top=glowY+'px';requestAnimationFrame(animateCursorGlow);}
+animateCursorGlow();
+
+/* 枫叶飘落 */
+const leafChars=['🍂','🍁','✦','✧','❋'];
+const leafContainer=document.getElementById('leafContainer');
+function createLeaf(){const leaf=document.createElement('div');leaf.className='leaf';leaf.textContent=leafChars[Math.floor(Math.random()*leafChars.length)];leaf.style.left=Math.random()*100+'vw';leaf.style.fontSize=(Math.random()*15+10)+'px';leaf.style.animationDuration=(Math.random()*8+8)+'s';leaf.style.animationDelay=Math.random()*2+'s';leaf.style.opacity=Math.random()*0.4+0.2;leafContainer.appendChild(leaf);setTimeout(function(){leaf.remove();},16000);}
+for(let i=0;i<15;i++)setTimeout(createLeaf,i*800);
+setInterval(createLeaf,1200);
+
+/* Hero视差 */
+const heroSection=document.querySelector('.hero-section');
+window.addEventListener('scroll',function(){const scrolled=window.pageYOffset;if(heroSection&&scrolled<window.innerHeight){heroSection.style.backgroundPositionY=scrolled*0.5+'px';}});
+
+/* 排行榜大图查看器 */
+let rankViewerIdx=0;
+function openRankViewer(idx){rankViewerIdx=idx;updateRankViewer();document.getElementById('rankViewer').classList.add('active');document.body.style.overflow='hidden';}
+function closeRankViewer(){document.getElementById('rankViewer').classList.remove('active');document.body.style.overflow='';}
+function updateRankViewer(){const list=window.rankSorted||characters;const c=list[rankViewerIdx];document.getElementById('rankViewerImg').src=c.avatar;document.getElementById('rankViewerName').textContent=c.name;document.getElementById('rankViewerRole').textContent=c.role;}
+function prevRankViewer(){const list=window.rankSorted||characters;rankViewerIdx=(rankViewerIdx-1+list.length)%list.length;updateRankViewer();}
+function nextRankViewer(){const list=window.rankSorted||characters;rankViewerIdx=(rankViewerIdx+1)%list.length;updateRankViewer();}
+document.addEventListener('keydown',function(e){if(document.getElementById('rankViewer').classList.contains('active')){if(e.key==='ArrowLeft')prevRankViewer();if(e.key==='ArrowRight')nextRankViewer();if(e.key==='Escape')closeRankViewer();}});
+
+// ========== 成员名片轮播 ==========
+let carouselIndex=0;let carouselTimer=null;let carouselPlaying=true;
+function renderMemberCarousel(){
+if(typeof characters==='undefined'||characters.length===0)return;
+if(carouselIndex>=characters.length)carouselIndex=0;
+const c=characters[carouselIndex];
+let artUrl=c.avatar;
+if(c.art){if(Array.isArray(c.art)&&c.art.length>0)artUrl=c.art[0];else if(typeof c.art==='string')artUrl=c.art;}
+const artEl=document.getElementById('carouselArt');if(artEl){artEl.src=artUrl;artEl.onerror=function(){this.src=c.avatar||'';};}
+const nameEl=document.getElementById('carouselName');if(nameEl)nameEl.textContent=c.name||'';
+const subEl=document.getElementById('carouselSubtitle');if(subEl)subEl.textContent=(c.desc||'云归渚 · 江湖儿女').substring(0,30);
+const avEl=document.getElementById('carouselAvatar');if(avEl)avEl.src=c.avatar||'';
+const nickEl=document.getElementById('carouselNickname');if(nickEl)nickEl.textContent=c.name||'';
+const posEl=document.getElementById('carouselPosition');if(posEl)posEl.textContent=c.role||'';
+const dots=document.getElementById('carouselDots');
+if(dots){dots.innerHTML='';const showDots=Math.min(characters.length,20);
+for(let i=0;i<showDots;i++){const d=document.createElement('button');d.className='member-carousel__dot'+(i===carouselIndex?' active':'');d.addEventListener('click',function(){goCarousel(i);});dots.appendChild(d);}}}
+function goCarousel(i){if(typeof characters==='undefined'||characters.length===0)return;carouselIndex=(i+characters.length)%characters.length;renderMemberCarousel();if(typeof selectChar==='function'){try{currentChar=carouselIndex;selectChar(carouselIndex);}catch(e){}}}
+function carouselNext(){goCarousel(carouselIndex+1);resetCarouselAuto();}
+function carouselPrev(){goCarousel(carouselIndex-1);resetCarouselAuto();}
+function toggleCarouselAuto(){carouselPlaying=!carouselPlaying;const btn=document.getElementById('carouselPlayBtn');if(btn)btn.textContent=carouselPlaying?'⏸':'▶';if(carouselPlaying)startCarouselAuto();else stopCarouselAuto();}
+function startCarouselAuto(){stopCarouselAuto();carouselTimer=setInterval(function(){goCarousel(carouselIndex+1);},5000);}
+function stopCarouselAuto(){if(carouselTimer){clearInterval(carouselTimer);carouselTimer=null;}}
+function resetCarouselAuto(){if(carouselPlaying){stopCarouselAuto();startCarouselAuto();}}
+// ========== 满天星多行横向轮播 ==========
+function renderPhotoWall3d(){
+const r1=document.getElementById('starwallR1');
+const r2=document.getElementById('starwallR2');
+const r3=document.getElementById('starwallR3');
+if(!r1||!r2||!r3||typeof galleryImages==='undefined')return;
+lightboxImages=galleryImages;
+if(galleryImages.length===0){r1.innerHTML='<div style="color:#a0aec0;padding:20px">暂无图片</div>';return;}
+const sizes=['sz-sm','sz-md','sz-md','sz-lg','sz-lg','sz-xl','sz-sq','sz-md'];
+const rows=[r1,r2,r3];
+const perRow=Math.ceil(galleryImages.length/3);
+rows.forEach(function(track,rowIdx){
+const imgs=galleryImages.slice(rowIdx*perRow,(rowIdx+1)*perRow);
+if(imgs.length===0)return;
+track.innerHTML='';
+// 图片重复3次，确保总宽度足够，滚动不露白
+const repeatedImgs=[];
+for(let r=0;r<3;r++){repeatedImgs.push(...imgs);}
+// 渲染两份实现无缝滚动
+for(let copy=0;copy<2;copy++){
+repeatedImgs.forEach(function(item,i){
+const div=document.createElement('div');
+div.className='starwall__item '+sizes[(i*2+rowIdx+copy)%sizes.length];
+div.style.animationDelay=((i*0.2+rowIdx*0.5)%4)+'s';
+div.innerHTML='<img src="'+item.url+'" alt="'+(item.title||'')+'" loading="lazy" onerror="this.style.opacity=\'0\'">';
+const globalIdx=galleryImages.indexOf(item);
+div.addEventListener('click',function(){openLightbox(item.url,globalIdx>=0?globalIdx:0);});
+track.appendChild(div);
+});
+}
+});
+}
+// 初始化轮播
+setTimeout(function(){if(typeof renderMemberCarousel==='function')renderMemberCarousel();if(typeof renderPhotoWall3d==='function')renderPhotoWall3d();
+ensureDefaultMessages().then(()=>{if(typeof renderMessages==='function')renderMessages();if(typeof startMessageScroll==='function')startMessageScroll();});
+},800);
+</script>
+
+</body>
+</html>
