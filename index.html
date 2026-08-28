@@ -18,7 +18,7 @@ body{font-family:"Noto Serif SC",serif;line-height:1.6;color:#E2E8F0;background:
 ::-webkit-scrollbar-thumb{background:rgba(212,175,55,.25);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:rgba(212,175,55,.45)}
 ::-webkit-scrollbar-corner{background:transparent}
-.loader{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f url('https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/background/background1.avif') center/cover no-repeat;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+.loader{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 50%,#0a0a0f 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
 .loader::before{content:'';position:absolute;inset:0;background:rgba(10,10,15,.85);backdrop-filter:blur(8px)}
 .loader>*{position:relative;z-index:1}
 .loader.hidden{opacity:0;visibility:hidden}
@@ -517,6 +517,98 @@ body{font-family:"Noto Serif SC",serif;line-height:1.6;color:#E2E8F0;background:
 
 /* 抖音播放器UI遮罩 */
 
+/* ===== 全面移动端适配优化 ===== */
+@media(max-width:480px){
+  .container,.main-nav__container{padding:0 15px}
+  .main-nav__container{height:60px}
+  .main-nav__brand h2{font-size:1.1rem}
+  .hero-section__title{font-size:2.8rem!important;letter-spacing:3px!important}
+  .hero-section__logo{width:120px!important}
+  .hero-section__subtitle{font-size:.8rem!important;padding:0 15px!important}
+  .btn{padding:12px 24px;font-size:.95rem;min-width:100px}
+  .section-header__title{font-size:1.8rem!important;letter-spacing:2px!important}
+  .section-header__subtitle{font-size:.8rem;padding:0 15px}
+  .stats__card{padding:20px 15px}
+  .stats__number{font-size:2rem}
+  .stats__label{font-size:.8rem}
+  .video-carousel__iframe{width:95vw!important;height:53vw!important}
+  .organization-activity-card{padding:15px!important;gap:15px}
+  .organization-carousel__image{width:100%!important;height:180px!important}
+  .character-showcase__name{font-size:1.8rem!important}
+  .character-showcase__description{font-size:.9rem!important}
+  .character-showcase__artwork{height:45vh!important}
+  .character-showcase__sidebar{padding:10px!important;gap:5px}
+  .character-showcase__item{max-width:70px;padding:6px 2px}
+  .character-showcase__item img{width:50px!important;height:50px!important}
+  .character-showcase__item span{font-size:.65rem}
+  .gallery__grid{grid-template-columns:repeat(2,1fr)!important;gap:8px}
+  .gallery__item{min-height:120px}
+  .rank__item{padding:12px 15px}
+  .rank__avatar{width:45px;height:45px}
+  .rank__name{font-size:.9rem}
+  .rank__value{font-size:.85rem}
+  .rank-viewer__img{width:250px!important;height:250px!important}
+  .timeline{padding-left:30px!important}
+  .timeline__item{padding-left:35px!important}
+  .timeline__item::before{left:8px!important;width:14px!important;height:14px!important}
+  .timeline::before{left:12px!important}
+  .rules__card{padding:20px 15px}
+  .rules__card h3{font-size:1.1rem}
+  .join__form input,.join__form textarea{padding:10px 12px;font-size:.9rem}
+  .message-wall{max-width:95vw!important}
+  .message-wall__scroll{height:350px}
+  .message-wall__item{padding:12px}
+  .message-wall__avatar{width:35px;height:35px}
+  .faq__item{padding:12px!important}
+  .faq__question{font-size:.9rem}
+  .faq__answer{font-size:.85rem}
+  .footer{padding:40px 15px}
+  .footer__col h4{font-size:1rem}
+  .footer__col a,.footer__col p{font-size:.85rem}
+  .modal__content{width:95%!important;max-height:90vh}
+  .modal__hero{padding:20px!important}
+  .modal__avatar{width:110px!important;height:110px!important}
+  .modal__name{font-size:1.5rem}
+  .modal__gallery{grid-template-columns:repeat(2,1fr)!important;padding:0 15px 15px!important;gap:8px}
+  .admin-login__box{width:90vw!important;padding:25px!important}
+  .admin-panel__header{padding:15px}
+  .admin-panel__body{padding:15px}
+  .admin-tab{padding:8px 12px;font-size:.8rem}
+  .audio-player{padding:8px 12px!important;gap:8px!important}
+  .audio-player__toggle-btn{width:36px!important;height:36px!important;font-size:12px!important}
+  .audio-player__info{min-width:100px!important}
+  .audio-player__nowplaying{max-width:100px!important;font-size:.7rem!important}
+  .audio-player__volume{display:none}
+  .audio-player__playlist-btn{width:30px!important;height:30px!important;font-size:12px!important}
+  .audio-playlist{width:calc(100vw - 20px)!important;right:10px!important;bottom:80px}
+  .loader__title{font-size:2rem!important;letter-spacing:8px!important}
+  .loader__bar{width:200px!important}
+  .back-top{width:40px;height:40px;font-size:1rem;bottom:80px}
+  .member-carousel{max-width:95vw}
+  .member-carousel__avatar{width:80px!important;height:80px!important}
+  .member-carousel__name{font-size:1.1rem}
+  .about-card{padding:30px 20px!important}
+  .about-card__title{font-size:1.5rem!important}
+  .starwall__fade{width:50px!important}
+}
+@media(max-width:360px){
+  .hero-section__title{font-size:2.2rem!important;letter-spacing:2px!important}
+  .section-header__title{font-size:1.5rem!important}
+  .stats__grid{grid-template-columns:1fr!important}
+  .gallery__grid{grid-template-columns:1fr!important}
+  .rank-viewer__img{width:200px!important;height:200px!important}
+  .modal__avatar{width:90px!important;height:90px!important}
+  .btn{padding:10px 20px;font-size:.85rem;min-width:90px}
+  .audio-player__info{display:none}
+  .character-showcase__item{max-width:60px}
+  .character-showcase__item img{width:42px!important;height:42px!important}
+}
+/* 修复移动端横向溢出 */
+*{max-width:100%;box-sizing:border-box}
+img,iframe,video{max-width:100%}
+/* 移动端禁用自定义光标 */
+@media(hover:none){.cursor-glow{display:none!important}*{cursor:auto!important}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@3"></script>
 </head>
@@ -1014,6 +1106,9 @@ function saveData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({siteInf
 
 function hideLoader(){const l=document.getElementById('loader');if(l&&!l.classList.contains('hidden'))l.classList.add('hidden');}
 document.addEventListener('DOMContentLoaded',function(){setTimeout(hideLoader,1500);});
+/* 备用：3秒后强制隐藏loader，防止JS错误导致白屏 */
+setTimeout(hideLoader,3000);
+window.addEventListener('load',function(){setTimeout(hideLoader,500);});
 setTimeout(hideLoader,5000);
 
 const canvas=document.getElementById('particleCanvas');
@@ -1749,6 +1844,8 @@ function applySettings(){const settings=JSON.parse(localStorage.getItem('yunguiz
 
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeCharModal();closeLightbox();closeAdmin();}if(lightbox.classList.contains('active')){if(e.key==='ArrowLeft')prevLightbox();if(e.key==='ArrowRight')nextLightbox();return;}if(e.key==='ArrowLeft'){if(charModal.classList.contains('active'))return;if(document.getElementById('video').getBoundingClientRect().top<window.innerHeight/2&&document.getElementById('video').getBoundingClientRect().bottom>0)prevVideo();else if(document.getElementById('activity').getBoundingClientRect().top<window.innerHeight/2&&document.getElementById('activity').getBoundingClientRect().bottom>0)prevOrg();}if(e.key==='ArrowRight'){if(charModal.classList.contains('active'))return;if(document.getElementById('video').getBoundingClientRect().top<window.innerHeight/2&&document.getElementById('video').getBoundingClientRect().bottom>0)nextVideo();else if(document.getElementById('activity').getBoundingClientRect().top<window.innerHeight/2&&document.getElementById('activity').getBoundingClientRect().bottom>0)nextOrg();}});
 
+/* 安全初始化：错误不会导致白屏 */
+try{
 loadData();
 renderFilters();
 renderCharList();
@@ -1759,8 +1856,11 @@ renderRank();
 applySettings();
 renderAdminSongs();
 renderMessages();
+}catch(e){console.warn('Init error:',e);}
 
-/* 鼠标跟随光晕 */
+/* 鼠标跟随光晕 - 仅在有hover的设备（非触屏）启用 */
+const isTouchDevice='ontouchstart' in window||navigator.maxTouchPoints>0;
+if(!isTouchDevice){
 const cursorGlow=document.getElementById('cursorGlow');
 const cursorDot=document.getElementById('cursorDot');
 document.body.style.cursor='none';
@@ -1770,6 +1870,11 @@ document.addEventListener('mousemove',function(e){mouseX=e.clientX;mouseY=e.clie
 document.addEventListener('mouseleave',function(){cursorGlow.style.opacity='0';});
 function animateCursorGlow(){glowX+=(mouseX-glowX)*0.1;glowY+=(mouseY-glowY)*0.1;cursorGlow.style.left=glowX+'px';cursorGlow.style.top=glowY+'px';requestAnimationFrame(animateCursorGlow);}
 animateCursorGlow();
+}else{
+/* 触屏设备隐藏光标相关元素 */
+const cg=document.getElementById('cursorGlow');if(cg)cg.style.display='none';
+const cd=document.getElementById('cursorDot');if(cd)cd.style.display='none';
+}
 
 /* 枫叶飘落 */
 const leafChars=['🍂','🍁','✦','✧','❋'];
