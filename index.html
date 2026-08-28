@@ -675,7 +675,7 @@ img,iframe,video{max-width:100%}
 <section class="hero-section" id="hero" style="background-image:url('https://aka.doubaocdn.com/s/SoRSZtmEWk')"><!-- 原背景：https://gitee.com/tx-feng/FengHuaWuQue/raw/Vue/Static/background/background1.avif -->
   <div class="hero-section__overlay"></div>
   <div class="hero-section__content">
-    <img src="https://aka.doubaocdn.com/s/68VBhVnsK9" alt="logo" class="hero-section__logo"><!-- 原logo：https://www.yysls.cn/pc/gw/20220815175950/img/logo3_e2ad630.png -->
+    <img src="https://aka.doubaocdn.com/s/oZQ3bMJUR7" alt="logo" class="hero-section__logo"><!-- 原logo：https://www.yysls.cn/pc/gw/20220815175950/img/logo3_e2ad630.png -->
     <h1 class="hero-section__title">云归渚</h1>
     <p class="hero-section__subtitle">云深不知归处 · 渚清沙白鸟飞回</p>
     <div class="hero-section__actions">
@@ -1108,11 +1108,10 @@ try{localStorage.removeItem('yunguizhu_videos');}catch(e){}}
 function saveData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({siteInfo,characters}));}catch(e){}}
 
 function hideLoader(){const l=document.getElementById('loader');if(l&&!l.classList.contains('hidden'))l.classList.add('hidden');}
-document.addEventListener('DOMContentLoaded',function(){setTimeout(hideLoader,1500);});
-/* 备用：3秒后强制隐藏loader，防止JS错误导致白屏 */
-setTimeout(hideLoader,3000);
-window.addEventListener('load',function(){setTimeout(hideLoader,500);});
+document.addEventListener('DOMContentLoaded',function(){setTimeout(hideLoader,3000);});
+/* 备用：5秒后强制隐藏loader，防止JS错误导致白屏 */
 setTimeout(hideLoader,5000);
+window.addEventListener('load',function(){setTimeout(hideLoader,2500);});
 
 const canvas=document.getElementById('particleCanvas');
 const ctx=canvas.getContext('2d');
