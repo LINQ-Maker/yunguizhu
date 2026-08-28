@@ -1101,11 +1101,16 @@ animateParticles();
 
 const audio=document.getElementById('bgAudio');
 // 音乐波形可视化
-const waveformCanvas=document.getElementById('waveformCanvas');
-const waveCtx=waveformCanvas.getContext('2d');
-let audioCtx=null, analyser=null, dataArray=null, waveAnimationId=null;
+let waveformCanvas, waveCtx, audioCtx=null, analyser=null, dataArray=null, waveAnimationId=null;
+window.addEventListener('load',function(){
+  waveformCanvas=document.getElementById('waveformCanvas');
+  if(waveformCanvas){
+    waveCtx=waveformCanvas.getContext('2d');
+    drawWaveform();
+  }
+});
 function initWaveform(){
-  if(audioCtx)return;
+  if(audioCtx||!audio)return;
   try{
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
     const source=audioCtx.createMediaElementSource(audio);
@@ -1118,7 +1123,7 @@ function initWaveform(){
 }
 function drawWaveform(){
   waveAnimationId=requestAnimationFrame(drawWaveform);
-  if(!analyser){waveCtx.clearRect(0,0,waveformCanvas.width,waveformCanvas.height);return;}
+  if(!waveCtx||!analyser){if(waveCtx)waveCtx.clearRect(0,0,waveformCanvas.width,waveformCanvas.height);return;}
   analyser.getByteFrequencyData(dataArray);
   waveCtx.clearRect(0,0,waveformCanvas.width,waveformCanvas.height);
   const barWidth=waveformCanvas.width/dataArray.length;
@@ -1131,7 +1136,6 @@ function drawWaveform(){
     waveCtx.fillRect(i*barWidth,waveformCanvas.height-barHeight,barWidth-1,barHeight);
   }
 }
-drawWaveform();
 
 const audioBtn=document.getElementById('audioBtn');
 let isPlaying=false;
