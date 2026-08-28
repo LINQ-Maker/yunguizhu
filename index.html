@@ -653,9 +653,9 @@ img,iframe,video{max-width:100%}
 <div class="audio-player">
   <audio id="bgAudio" loop><source src="https://s3plus.meituan.net/opapisdk/op_ticket_885190757_1758424375681_qdqqd_t01hdm.mp3" type="audio/mpeg"></audio>
   <button class="audio-player__toggle-btn" id="audioBtn">▶</button>
-  <canvas id="waveformCanvas" width="80" height="24" style="margin-right:8px;flex-shrink:0;"></canvas><div class="audio-player__info">
+  <div class="audio-player__info">
     <div class="audio-player__nowplaying" id="nowPlaying">♫ 燕云十六声 - 登录曲</div>
-    <div class="audio-player__progress-bar" id="progressBar"><div class="audio-player__progress-fill" id="progressFill"></div></div>
+    <canvas id="waveformCanvas" width="200" height="20" style="width:100%;height:20px;margin-bottom:4px;"></canvas><div class="audio-player__progress-bar" id="progressBar"><div class="audio-player__progress-fill" id="progressFill"></div></div>
     <div class="audio-player__time"><span id="currentTime">0:00</span> / <span id="totalTime">0:00</span></div>
   </div>
   <div class="audio-player__volume"><span>🔊</span><input type="range" class="audio-player__volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.3"></div>
