@@ -762,24 +762,28 @@ body:hover #cursorGlow{opacity:1;}
 </div>
 <script>
 (function(){
-  let p=0;
-  const bar=document.getElementById('splashBarFill');
-  const pct=document.getElementById('splashPercent');
-  const t=setInterval(function(){
+  var p=0;
+  var bar=document.getElementById('splashBarFill');
+  var pct=document.getElementById('splashPercent');
+  function hideSplash(){
+    var s=document.getElementById('splashScreen');
+    if(s){
+      s.style.opacity='0';
+      s.style.visibility='hidden';
+      s.style.pointerEvents='none';
+      setTimeout(function(){if(s)s.style.display='none';},900);
+    }
+  }
+  var t=setInterval(function(){
     p+=Math.random()*15+5;
-    if(p>=100){p=100;clearInterval(t);
-      setTimeout(function(){
-        const s=document.getElementById('splashScreen');
-        if(s){s.classList.add('hide');setTimeout(function(){s.style.display='none';},800);}
-      },500);}
+    if(p>=100){p=100;clearInterval(t);setTimeout(hideSplash,500);}
     if(bar)bar.style.width=p+'%';
     if(pct)pct.textContent=Math.floor(p)+'%';
   },150);
-  // 兜底：5秒后强制隐藏
-  setTimeout(function(){
-    const s=document.getElementById('splashScreen');
-    if(s&&s.style.display!=='none'){s.classList.add('hide');setTimeout(function(){s.style.display='none';},800);}
-  },5000);
+  // 多重兜底：页面加载完成后 / 6秒后 强制隐藏
+  if(window.attachEvent){window.attachEvent('onload',hideSplash);}
+  else{window.addEventListener('load',hideSplash);}
+  setTimeout(hideSplash,6000);
 })();
 </script>
 <div id="scrollProgress"></div>
