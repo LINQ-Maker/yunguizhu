@@ -3210,5 +3210,12 @@ item.style.breakInside='avoid';item.style.marginBottom='15px';});}
     </div>
   </div>
 </div>
+<script>
+// 终极兜底：3秒后强制隐藏开屏层
+setTimeout(function(){
+  var s=document.getElementById('splashScreen');
+  if(s){s.style.display='none';}
+},3000);
+</script>
 </body>
 </html>
