@@ -23,7 +23,7 @@ body{font-family:"Noto Serif SC",serif;line-height:1.6;color:#E2E8F0;background:
 /* 原loader背景：linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 50%,#0a0a0f 100%) */
 /* 上一版loader背景：https://aka.doubaocdn.com/s/jprbrEtoAE */
 .loader>*{position:relative;z-index:1}
-.loader.hidden{opacity:0;visibility:hidden}
+.loader.hidden{opacity:0!important;visibility:hidden!important;pointer-events:none!important;display:none!important;}
 .loader__title{font-family:"Ma Shan Zheng",cursive;font-size:4rem;color:#d4af37;letter-spacing:15px;margin-bottom:30px;text-shadow:0 0 30px rgba(212,175,55,.6);animation:pulse 1.5s infinite}
 .loader__bar{width:280px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
 .loader__fill{width:0;height:100%;background:linear-gradient(90deg,#d4af37,#f0e6d2);animation:loadFill 1.5s ease forwards;box-shadow:0 0 10px rgba(212,175,55,.8)}
@@ -755,25 +755,7 @@ body:hover #cursorGlow{opacity:1;}
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-<div id="splashScreen">
-  <div class="splash-logo">云归渚</div>
-  <div class="splash-sub">云深不知归处 · 渚清沙白鸟飞回</div>
-  <div class="splash-bar"><div class="splash-bar-fill" id="splashBarFill"></div></div>
-  <div class="splash-percent" id="splashPercent">0%</div>
-</div>
-<script>
-(function(){
-  var p=0;
-  var bar=document.getElementById('splashBarFill');
-  var pct=document.getElementById('splashPercent');
-  var t=setInterval(function(){
-    p+=Math.random()*12+4;
-    if(p>=100){p=100;clearInterval(t);}
-    if(bar)bar.style.width=p+'%';
-    if(pct)pct.textContent=Math.floor(p)+'%';
-  },120);
-})();
-</script>
+<!-- 开屏加载使用 #loader，已删除重复的 #splashScreen -->
 <div id="scrollProgress"></div>
 <div id="cursorGlow"></div>
 <canvas id="starfield"></canvas>
