@@ -770,7 +770,7 @@ body:hover #cursorGlow{opacity:1;}
   <div class="theme-dot theme-darkpurple" data-theme="darkpurple" title="暗夜紫"></div>
 </div>
 
-<div class="loader" id="loader" style="display:none;"><div class="loader__title">云归渚</div><div class="loader__bar"><div class="loader__fill"></div></div></div>
+<div class="loader" id="loader"><div class="loader__title">云归渚</div><div class="loader__bar"><div class="loader__fill"></div></div></div>
 <div class="scroll-progress" id="scrollProgress"></div>
 <canvas id="particleCanvas"></canvas>
 <div class="cursor-glow" id="cursorGlow"></div>
@@ -800,6 +800,7 @@ body:hover #cursorGlow{opacity:1;}
       <li><a class="main-nav__link" onclick="scrollToSection('video')">混剪</a></li>
       <li><a class="main-nav__link" onclick="scrollToSection('activity')">活动</a></li>
       <li><a class="main-nav__link" onclick="scrollToSection('members')">人员</a></li>
+      <li><a class="main-nav__link" onclick="scrollToSection('features')">功能</a></li>
       <li><a class="main-nav__link" onclick="scrollToSection('timeline')">大事记</a></li>
       <li><a class="main-nav__link" onclick="scrollToSection('gallery')">相册</a></li>
       <li><a class="main-nav__link" onclick="scrollToSection('faq')">FAQ</a></li>
@@ -932,6 +933,107 @@ body:hover #cursorGlow{opacity:1;}
     </div>
   </div>
 </section>
+
+<!-- 功能中心独立板块 -->
+<section class="section features-section" id="features" style="background:rgba(15,15,25,.95);padding:80px 0;">
+  <div class="container">
+    <div class="section-header reveal" style="text-align:center;margin-bottom:50px;">
+      <h2 class="section-header__title" style="font-size:2.5rem;color:#d4af37;text-shadow:0 0 30px rgba(212,175,55,.3);letter-spacing:8px;">功 能 中 心</h2>
+      <p class="section-header__subtitle" style="color:#a0aec0;margin-top:10px;">百业专属小工具 · 点击体验</p>
+    </div>
+    <div class="features-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:20px;max-width:1200px;margin:0 auto;">
+      <div class="feature-card" onclick="document.getElementById('musicBoxPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">🎵</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">百业音乐盒</div>
+        <div style="font-size:.8rem;color:#718096;">多歌曲播放</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('fortunePanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">🎋</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">江湖求签</div>
+        <div style="font-size:.8rem;color:#718096;">每日一签</div>
+      </div>
+      <div class="feature-card" onclick="showEmojiWall()" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">😂</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">表情包墙</div>
+        <div style="font-size:.8rem;color:#718096;">百业表情</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('avatarMakerPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">🎨</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">头像生成</div>
+        <div style="font-size:.8rem;color:#718096;">古风头像</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('timeCapsulePanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">⏳</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">时间胶囊</div>
+        <div style="font-size:.8rem;color:#718096;">写给未来</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('treeholePanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">🌲</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">匿名树洞</div>
+        <div style="font-size:.8rem;color:#718096;">倾诉心声</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('votePanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">🗳️</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">百业投票</div>
+        <div style="font-size:.8rem;color:#718096;">参与投票</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('guamingPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">📝</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">挂名申请</div>
+        <div style="font-size:.8rem;color:#718096;">留下名字</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('sharePanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">🔗</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">一键分享</div>
+        <div style="font-size:.8rem;color:#718096;">分享网站</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('uploadPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">📷</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">照片投稿</div>
+        <div style="font-size:.8rem;color:#718096;">上传照片</div>
+      </div>
+      <div class="feature-card" onclick="initDataPanel()" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">📊</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">数据看板</div>
+        <div style="font-size:.8rem;color:#718096;">数据可视化</div>
+      </div>
+      <div class="feature-card" onclick="initYearCompare()" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">📈</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">年度对比</div>
+        <div style="font-size:.8rem;color:#718096;">今年vs去年</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('signinPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">📅</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">每日签到</div>
+        <div style="font-size:.8rem;color:#718096;">签到打卡</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('anniversaryPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">🎂</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">周年庆</div>
+        <div style="font-size:.8rem;color:#718096;">倒计时</div>
+      </div>
+      <div class="feature-card" onclick="renderBrowseReport();document.getElementById('browseReportPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">📋</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">浏览报告</div>
+        <div style="font-size:.8rem;color:#718096;">访问统计</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('exportPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">📖</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">导出留念册</div>
+        <div style="font-size:.8rem;color:#718096;">保存回忆</div>
+      </div>
+      <div class="feature-card" onclick="document.getElementById('imeSkinPanel').classList.add('active')" style="background:rgba(30,30,45,.8);border:1px solid rgba(212,175,55,.2);border-radius:15px;padding:25px 15px;text-align:center;cursor:pointer;transition:all .3s;">
+        <div style="font-size:2.5rem;margin-bottom:10px;">⌨️</div>
+        <div style="color:#d4af37;font-weight:bold;margin-bottom:5px;">输入法皮肤</div>
+        <div style="font-size:.8rem;color:#718096;">百业主题</div>
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+.feature-card:hover{transform:translateY(-8px);border-color:rgba(212,175,55,.6)!important;box-shadow:0 10px 30px rgba(212,175,55,.2);}
+@media(max-width:768px){.features-grid{grid-template-columns:repeat(2,1fr)!important;}}
+</style>
 
 <section class="section timeline-section" id="timeline">
   <div class="container">
@@ -2616,7 +2718,8 @@ window.copyShareLink=function(){navigator.clipboard.writeText(window.location.hr
 window.shareToWeibo=function(){window.open('https://service.weibo.com/share/share.php?url='+encodeURIComponent(window.location.href)+'&title='+encodeURIComponent('云归渚 · 留念站 - 云深不知归处，渚清沙白鸟飞回'),'_blank');};
 window.shareToQQ=function(){window.open('https://connect.qq.com/widget/shareqq/index.html?url='+encodeURIComponent(window.location.href)+'&title='+encodeURIComponent('云归渚 · 留念站'),'_blank');};
 
-// 在导航栏添加入口按钮
+// 在导航栏添加入口按钮（已禁用：移到功能中心独立板块）
+/*
 setTimeout(function(){
 const nav=document.querySelector('nav, .nav, [class*="nav"]');
 if(nav&&!document.getElementById('megaNavBtns')){
@@ -2656,6 +2759,7 @@ nav.appendChild(div);}
 const oldMusicBtn=document.querySelector('[class*="music"], [class*="player"] button, .music-player');
 if(oldMusicBtn){oldMusicBtn.addEventListener('dblclick',function(){document.getElementById('musicBoxPanel').classList.add('active');});}
 },3000);
+*/
 
 })();
 
@@ -2817,7 +2921,8 @@ const link=document.createElement('a');link.download='云归渚输入法皮肤_'
 link.href=canvas.toDataURL('image/png');link.click();};
 setTimeout(function(){generateImeSkin();},2500);
 
-// 在导航栏添加更多入口
+// 在导航栏添加更多入口（已禁用：移到功能中心独立板块）
+/*
 setTimeout(function(){
 const navBtns=document.getElementById('megaNavBtns');
 if(navBtns){
@@ -2831,6 +2936,7 @@ extra.innerHTML='<button onclick="initDataPanel()" style="background:none;border
 '<button onclick="document.getElementById(\'imeSkinPanel\').classList.add(\'active\')" style="background:none;border:none;color:var(--theme-text);cursor:pointer;font-size:1rem;padding:5px;" title="输入法皮肤">⌨️</button>';
 navBtns.appendChild(extra);}
 },4000);
+*/
 
 // 瀑布流卡片（给相册区域添加瀑布流样式）
 setTimeout(function(){
