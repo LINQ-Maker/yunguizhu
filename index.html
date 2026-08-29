@@ -490,6 +490,12 @@ body{font-family:"Noto Serif SC",serif;line-height:1.6;color:#E2E8F0;background:
 @keyframes scrollL{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes scrollR{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
 .starwall__item{position:relative;flex:0 0 auto;cursor:pointer;border-radius:6px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,.5);background:#0d0f14;transition:transform .4s,box-shadow .4s,filter .4s}
+.starwall__item{position:relative;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);overflow:hidden;}
+.starwall__item img{opacity:0;transition:opacity .5s ease;width:100%;height:100%;object-fit:cover;display:block;}
+.starwall__item img.loaded{opacity:1;}
+.starwall__item--loading::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(212,175,55,.08),transparent);background-size:200% 100%;animation:starwallShimmer 1.5s infinite;pointer-events:none;}
+.starwall__item--error::after{content:'\1F5BC\FE0F';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.8rem;opacity:.25;pointer-events:none;}
+@keyframes starwallShimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 .starwall__item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s,opacity .4s;background:linear-gradient(135deg,#1a1a2e,#16213e)}
 .starwall__item::after{content:'';position:absolute;inset:0;border:1px solid rgba(212,175,55,.4);border-radius:6px;opacity:0;transition:opacity .4s;pointer-events:none;box-shadow:0 0 15px rgba(212,175,55,.3),inset 0 0 10px rgba(212,175,55,.1)}
 .starwall__item:hover{z-index:10;transform:scale(1.15);filter:brightness(1.15);box-shadow:0 10px 40px rgba(0,0,0,.7),0 0 30px rgba(212,175,55,.5);animation:none}
@@ -1856,22 +1862,39 @@ rows.forEach(function(track,rowIdx){
 const imgs=galleryImages.slice(rowIdx*perRow,(rowIdx+1)*perRow);
 if(imgs.length===0)return;
 track.innerHTML='';
-// 图片重复3次，确保总宽度足够，滚动不露白
+// 图片重复1次（原3次，减少2/3请求），渲染两份实现无缝滚动
 const repeatedImgs=[];
-for(let r=0;r<3;r++){repeatedImgs.push(...imgs);}
-// 渲染两份实现无缝滚动
+for(let r=0;r<1;r++){repeatedImgs.push(...imgs);}
 for(let copy=0;copy<2;copy++){
 repeatedImgs.forEach(function(item,i){
 const div=document.createElement('div');
-div.className='starwall__item '+sizes[(i*2+rowIdx+copy)%sizes.length];
+div.className='starwall__item '+sizes[(i*2+rowIdx+copy)%sizes.length]+' starwall__item--loading';
 div.style.animationDelay=((i*0.2+rowIdx*0.5)%4)+'s';
-div.innerHTML='<img src="'+item.url+'" alt="'+(item.title||'')+'" loading="lazy" onerror="this.style.opacity=\'0\'">';
+const img=document.createElement('img');
+img.dataset.src=item.url;
+img.alt=item.title||'';
+img.loading='lazy';
+img.onerror=function(){this.parentElement.classList.remove('starwall__item--loading');this.parentElement.classList.add('starwall__item--error');};
+img.onload=function(){this.parentElement.classList.remove('starwall__item--loading');this.classList.add('loaded');};
 const globalIdx=galleryImages.indexOf(item);
 div.addEventListener('click',function(){openLightbox(item.url,globalIdx>=0?globalIdx:0);});
+div.appendChild(img);
 track.appendChild(div);
 });
 }
 });
+// 懒加载观察器：进入视口左右500px内才加载
+if(window.photoWallObserver){window.photoWallObserver.disconnect();}
+window.photoWallObserver=new IntersectionObserver(function(entries){
+entries.forEach(function(entry){
+if(entry.isIntersecting){
+const img=entry.target.querySelector('img');
+if(img&&img.dataset.src&&!img.src){img.src=img.dataset.src;}
+window.photoWallObserver.unobserve(entry.target);
+}
+});
+},{rootMargin:'0px 500px'});
+document.querySelectorAll('.starwall__item').forEach(function(el){window.photoWallObserver.observe(el);});
 }
 // 初始化轮播
 setTimeout(function(){if(typeof renderMemberCarousel==='function')renderMemberCarousel();if(typeof renderPhotoWall3d==='function')renderPhotoWall3d();
