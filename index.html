@@ -2092,17 +2092,7 @@ ensureDefaultMessages().then(()=>{if(typeof renderMessages==='function')renderMe
 (function(){
 'use strict';
 
-/* --- 1. 开屏加载 --- */
-let splashProgress=0;
-const splashBar=document.getElementById('splashBarFill');
-const splashPercent=document.getElementById('splashPercent');
-const splashTimer=setInterval(function(){
-  splashProgress+=Math.random()*15+5;
-  if(splashProgress>=100){splashProgress=100;clearInterval(splashTimer);
-    setTimeout(function(){document.getElementById('splashScreen').classList.add('hide');},500);}
-  if(splashBar)splashBar.style.width=splashProgress+'%';
-  if(splashPercent)splashPercent.textContent=Math.floor(splashProgress)+'%';
-},150);
+/* --- 1. 开屏加载（已由内联script处理） --- */
 
 /* --- 2. 星空背景 --- */
 const starCanvas=document.getElementById('starfield');
