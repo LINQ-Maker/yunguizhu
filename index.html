@@ -765,25 +765,29 @@ body:hover #cursorGlow{opacity:1;}
   var p=0;
   var bar=document.getElementById('splashBarFill');
   var pct=document.getElementById('splashPercent');
+  var hidden=false;
   function hideSplash(){
+    if(hidden)return;hidden=true;
     var s=document.getElementById('splashScreen');
     if(s){
       s.style.opacity='0';
       s.style.visibility='hidden';
       s.style.pointerEvents='none';
+      s.style.transition='opacity .8s ease';
       setTimeout(function(){if(s)s.style.display='none';},900);
     }
   }
   var t=setInterval(function(){
     p+=Math.random()*15+5;
-    if(p>=100){p=100;clearInterval(t);setTimeout(hideSplash,500);}
+    if(p>=100){p=100;clearInterval(t);setTimeout(hideSplash,400);}
     if(bar)bar.style.width=p+'%';
     if(pct)pct.textContent=Math.floor(p)+'%';
   },150);
-  // 多重兜底：页面加载完成后 / 6秒后 强制隐藏
-  if(window.attachEvent){window.attachEvent('onload',hideSplash);}
-  else{window.addEventListener('load',hideSplash);}
-  setTimeout(hideSplash,6000);
+  // 立即检查：如果页面已加载完成，直接隐藏
+  if(document.readyState==='complete'){setTimeout(hideSplash,800);}
+  else{window.addEventListener('load',function(){setTimeout(hideSplash,500);});}
+  // 终极兜底：4秒后强制隐藏
+  setTimeout(hideSplash,4000);
 })();
 </script>
 <div id="scrollProgress"></div>
