@@ -773,7 +773,7 @@ body:hover #cursorGlow{opacity:1;}
 <div id="danmakuContainer"></div>
 <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 <div id="themeSwitcher">
-  <button class="theme-toggle-btn" onclick="var p=document.getElementById('themePanel');if(p)p.classList.toggle('open');" title="切换皮肤">🎨</button>
+  <button class="theme-toggle-btn" onclick="var p=document.getElementById('themePanel');if(p)p.style.display=(p.style.display==='block')?'none':'block';" title="切换皮肤">🎨</button>
   <div class="theme-panel" id="themePanel">
     <div class="theme-panel__title">皮 肤 切 换</div>
     <div class="theme-option active" data-theme="default" onclick="switchTheme('default',this)">
@@ -2266,14 +2266,14 @@ function toggleThemePanel(){document.getElementById('themePanel').classList.togg
 document.addEventListener('click',function(e){
   const switcher=document.getElementById('themeSwitcher');
   const panel=document.getElementById('themePanel');
-  if(switcher&&!switcher.contains(e.target)&&panel)panel.classList.remove('open');
+  if(switcher&&!switcher.contains(e.target)&&panel)panel.style.display='none';
 });
 function switchTheme(theme,el){
   if(theme==='default'){document.documentElement.removeAttribute('data-theme');localStorage.removeItem('yunguizhu_theme');}
   else{document.documentElement.setAttribute('data-theme',theme);localStorage.setItem('yunguizhu_theme',theme);}
   document.querySelectorAll('.theme-option').forEach(function(o){o.classList.remove('active');});
   if(el)el.classList.add('active');
-  document.getElementById('themePanel').classList.remove('open');
+  document.getElementById('themePanel').style.display='none';
 }
 // 初始化皮肤
 const savedTheme=localStorage.getItem('yunguizhu_theme');
