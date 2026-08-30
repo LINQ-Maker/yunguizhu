@@ -3367,5 +3367,37 @@ setTimeout(function(){
   if(s){s.style.display='none';}
 },3000);
 </script>
+<script>
+// 皮肤切换功能（独立脚本，确保不依赖主脚本）
+function switchTheme(theme,el){
+  try{
+    if(theme==='default'){document.documentElement.removeAttribute('data-theme');localStorage.removeItem('yunguizhu_theme');}
+    else{document.documentElement.setAttribute('data-theme',theme);localStorage.setItem('yunguizhu_theme',theme);}
+    document.querySelectorAll('.theme-option').forEach(function(o){o.classList.remove('active');});
+    if(el)el.classList.add('active');
+    var p=document.getElementById('themePanel');
+    if(p)p.style.display='none';
+  }catch(e){console.error('switchTheme error:',e);}
+}
+// 点击外部关闭皮肤面板
+document.addEventListener('click',function(e){
+  try{
+    var switcher=document.getElementById('themeSwitcher');
+    var panel=document.getElementById('themePanel');
+    if(switcher&&!switcher.contains(e.target)&&panel)panel.style.display='none';
+  }catch(e){}
+});
+// 初始化皮肤
+try{
+  var savedTheme=localStorage.getItem('yunguizhu_theme');
+  if(savedTheme&&savedTheme!=='default'){
+    document.documentElement.setAttribute('data-theme',savedTheme);
+    document.querySelectorAll('.theme-option').forEach(function(o){
+      o.classList.remove('active');
+      if(o.getAttribute('data-theme')===savedTheme)o.classList.add('active');
+    });
+  }
+}catch(e){}
+</script>
 </body>
 </html>
