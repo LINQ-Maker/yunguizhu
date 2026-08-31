@@ -2983,13 +2983,13 @@ navBtns.appendChild(extra);}
 },4000);
 */
 
-// 瀑布流卡片（给相册区域添加瀑布流样式）
-setTimeout(function(){
-const gallery=document.querySelector('.starwall, .gallery, [class*="photo-wall"]');
-if(gallery){gallery.style.columnCount='3';gallery.style.columnGap='15px';
-gallery.querySelectorAll('.starwall__item, .gallery-item').forEach(function(item){
-item.style.breakInside='avoid';item.style.marginBottom='15px';});}
-},3500);
+// 瀑布流卡片已禁用 - 相册已改用网格布局(gallery-grid)，不需要瀑布流样式
+// setTimeout(function(){
+// const gallery=document.querySelector('.starwall, .gallery, [class*="photo-wall"]');
+// if(gallery){gallery.style.columnCount='3';gallery.style.columnGap='15px';
+// gallery.querySelectorAll('.starwall__item, .gallery-item').forEach(function(item){
+// item.style.breakInside='avoid';item.style.marginBottom='15px';});}
+// },3500);
 
 })();
 </script>
